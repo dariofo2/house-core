@@ -14,7 +14,7 @@ export class Migration17userRoles implements MigrationInterface {
     );
 
     await queryRunner.query(
-      `INSERT into "role" (name, description) VALUES ('admin','Admin Role. Has privileged Access to Everything. In User grants FULL ACCESS. In House grants FULL ACCESS'), ('visitor','User Role. In User Can Make Houses (Own Houses is Admin House Role Default) and Access To Houses Allowed. In House grants capacity of adding things, never delete'), ('user','User Role. In User Can do nothing. In House grants Visitor, only Read')`,
+      `INSERT into "role" (name, description) VALUES ('admin','Admin Role. Has privileged Access to Everything. In User grants FULL ACCESS. In House grants FULL ACCESS'), ('user','User Role. In User Can Make Houses (Own Houses is Admin House Role Default) and Access To Houses Allowed. In House grants capacity of adding things, never delete'), ('visitor','Visitor Role. In User Can do nothing. In House grants Visitor, only Read')`,
     );
 
     await queryRunner.query(
