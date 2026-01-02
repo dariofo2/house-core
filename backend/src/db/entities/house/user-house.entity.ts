@@ -7,11 +7,11 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import User from './user.entity';
-import Role from './role.entity';
+import User from '../user/user.entity';
+import House from './house.entity';
 
 @Entity()
-export default class UserRole {
+export default class UserHouse {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -19,7 +19,7 @@ export default class UserRole {
   userId: number;
 
   @Column()
-  roleId: number;
+  houseId: number;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -27,17 +27,17 @@ export default class UserRole {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.userRoles, {
+  @ManyToOne(() => User, (user) => user.userHouses, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @ManyToOne(() => Role, (role) => role.usersRole, {
+  @ManyToOne(() => User, (user) => user.userHouses, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'roleId' })
-  role: Role;
+  @JoinColumn({ name: 'houseId' })
+  house: House;
 }

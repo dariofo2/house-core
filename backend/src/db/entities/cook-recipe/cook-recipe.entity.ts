@@ -4,18 +4,17 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import House from '../house/house.entity';
+import CookRecipeProduct from './cook-recipe-product.entity';
 
 @Entity()
-export default class Event {
+export default class CookRecipe {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column()
-  houseId: number;
 
   @Column()
   name: string;
@@ -32,10 +31,17 @@ export default class Event {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => House, (house) => house.events, {
+  @ManyToOne(() => House, (house) => house.cookRecipes, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'houseId' })
   house: House;
+
+  @OneToMany(
+    () => CookRecipeProduct,
+    (cookRecipeProduct) => cookRecipeProduct.cookRecipe,
+    { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
+  )
+  cookRecipeProducts: CookRecipeProduct[];
 }

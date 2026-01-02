@@ -4,13 +4,15 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import House from '../house/house.entity';
+import Subcategory from './subcategory.entity';
 
 @Entity()
-export default class Event {
+export default class Category {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -23,19 +25,22 @@ export default class Event {
   @Column()
   description: string;
 
-  @Column()
-  maxDays: number;
-
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => House, (house) => house.events, {
+  @ManyToOne(() => House, (house) => house.categories, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'houseId' })
   house: House;
+
+  @OneToMany(() => Subcategory, (subcategory) => subcategory.category, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
+  subcategories: Subcategory[];
 }

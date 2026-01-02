@@ -7,24 +7,21 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import House from '../house/house.entity';
+import Product from './product.entity';
 
 @Entity()
-export default class Event {
+export default class ProductBatch {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  houseId: number;
+  productId: number;
 
   @Column()
-  name: string;
+  quantity: number;
 
-  @Column()
-  description: string;
-
-  @Column()
-  maxDays: number;
+  @Column({ type: 'timestamp' })
+  expirationDate: Date;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -32,10 +29,10 @@ export default class Event {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => House, (house) => house.events, {
-    onUpdate: 'CASCADE',
+  @ManyToOne(() => Product, (product) => product.productBatches, {
     onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'houseId' })
-  house: House;
+  @JoinColumn({ name: 'productId' })
+  product: Product;
 }

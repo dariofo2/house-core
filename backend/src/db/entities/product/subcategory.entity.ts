@@ -2,24 +2,27 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import User from './user.entity';
-import Role from './role.entity';
+import Product from './product.entity';
+import Category from './category.entity';
 
 @Entity()
-export default class UserRole {
+export default class Subcategory {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  userId: number;
+  categoryId: number;
 
   @Column()
-  roleId: number;
+  name: string;
+
+  @Column()
+  description: string;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -27,17 +30,15 @@ export default class UserRole {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.userRoles, {
+  @OneToMany(() => Product, (product) => product.subcategory, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'userId' })
-  user: User;
+  products: Product[];
 
-  @ManyToOne(() => Role, (role) => role.usersRole, {
+  @ManyToOne(() => Category, (category) => category.subcategories, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'roleId' })
-  role: Role;
+  category: Category;
 }
