@@ -30,14 +30,14 @@ export default class Product {
   @Column()
   description: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   unity: string | null;
 
   @Column({ default: 1 })
   step: number;
 
-  @Column({ nullable: true })
-  photo: string;
+  @Column({ type: 'varchar', nullable: true })
+  photo: string | null;
 
   @Column({ default: 1 })
   minQuantity: number;
