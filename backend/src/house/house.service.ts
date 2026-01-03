@@ -99,6 +99,8 @@ export default class HouseService {
   }
 
   async addUserToHouse(user: User, addUserHouseDTO: AddUserHouseDTO) {
+    //Admin TODO
+
     const userHouseFound =
       await this.houseRepository.getUserHouseByHouseIdUserId(
         addUserHouseDTO.houseId,
@@ -142,6 +144,8 @@ export default class HouseService {
     user: User,
     updateUserHouseDTO: UpdateUserHouseDTO,
   ) {
+    //ADMIN TODO
+
     const userHouseFound =
       await this.houseRepository.getUserHouseByHouseIdUserId(
         updateUserHouseDTO.houseId,
@@ -173,10 +177,15 @@ export default class HouseService {
       throw new BadRequestException('This role doesnt Exist in DB');
 
     userHouseToUpdate.roleId = roleFound.id;
-    return await this.houseRepository.addUserHouse(userHouseToUpdate);
+    userHouseToUpdate.role = roleFound;
+
+    this.logger.warn(userHouseToUpdate);
+    return await this.houseRepository.updateUserHouse(userHouseToUpdate);
   }
 
   async deleteUserFromHouse(user: User, userId: number, houseId: number) {
+    //ADMIN TODO
+
     const userHouseFound =
       await this.houseRepository.getUserHouseByHouseIdUserId(houseId, user.id);
 

@@ -38,7 +38,7 @@ export default class UserHouse {
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @ManyToOne(() => User, (user) => user.userHouses, {
+  @ManyToOne(() => House, (house) => house.usersHouse, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })

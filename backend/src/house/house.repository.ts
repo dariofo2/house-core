@@ -1,4 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import House from 'src/db/entities/house/house.entity';
 import UserHouse from 'src/db/entities/house/user-house.entity';
 import User from 'src/db/entities/user/user.entity';
@@ -13,148 +17,232 @@ export default class HouseRepository {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
 
-    const houseFound = await queryRunner.manager.findOne(House, {
-      where: {
-        id: Equal(id),
-      },
-    });
+    try {
+      const houseFound = await queryRunner.manager.findOne(House, {
+        where: {
+          id: Equal(id),
+        },
+      });
 
-    return houseFound;
+      return houseFound;
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException(error);
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async getHouseByUserId(houseId: number, userId: number) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
 
-    const houseFound = await queryRunner.manager.findOne(House, {
-      where: {
-        id: houseId,
-        usersHouse: {
-          userId: userId,
+    try {
+      const houseFound = await queryRunner.manager.findOne(House, {
+        where: {
+          id: houseId,
+          usersHouse: {
+            userId: userId,
+          },
         },
-      },
-    });
+      });
 
-    return houseFound;
+      return houseFound;
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException(error);
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async listUserHouses(userId: number) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
 
-    const housesFound = await queryRunner.manager.find(House, {
-      where: {
-        usersHouse: {
-          userId: Equal(userId),
+    try {
+      const housesFound = await queryRunner.manager.find(House, {
+        where: {
+          usersHouse: {
+            userId: Equal(userId),
+          },
         },
-      },
-    });
+      });
 
-    return housesFound;
+      return housesFound;
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException(error);
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async listAllHouses() {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
 
-    const housesFound = await queryRunner.manager.find(House);
+    try {
+      const housesFound = await queryRunner.manager.find(House);
 
-    return housesFound;
+      return housesFound;
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException(error);
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async createHouse(house: House) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
 
-    const createdHouse = await queryRunner.manager.save(House, house);
+    try {
+      const createdHouse = await queryRunner.manager.save(House, house);
 
-    return createdHouse;
+      return createdHouse;
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException(error);
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async updateHouse(house: House) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
 
-    const createdHouse = await queryRunner.manager.save(House, house);
+    try {
+      const createdHouse = await queryRunner.manager.save(House, house);
 
-    return createdHouse;
+      return createdHouse;
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException(error);
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async deleteHouse(id: number) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
 
-    const deletedHouse = await queryRunner.manager.delete(House, {
-      id: id,
-    });
+    try {
+      const deletedHouse = await queryRunner.manager.delete(House, {
+        id: id,
+      });
 
-    return deletedHouse;
+      return deletedHouse;
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException(error);
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async addUserHouse(userHouse: UserHouse) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
 
-    const createdUserHouse = await queryRunner.manager.save(
-      UserHouse,
-      userHouse,
-    );
+    try {
+      const createdUserHouse = await queryRunner.manager.save(
+        UserHouse,
+        userHouse,
+      );
 
-    return createdUserHouse;
+      return createdUserHouse;
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException(error);
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async deleteUserHouse(id: number) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
 
-    const createdUserHouse = await queryRunner.manager.delete(UserHouse, {
-      id: id,
-    });
+    try {
+      const createdUserHouse = await queryRunner.manager.delete(UserHouse, {
+        id: id,
+      });
 
-    return createdUserHouse;
+      return createdUserHouse;
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException(error);
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async updateUserHouse(userHouse: UserHouse) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
 
-    const createdUserHouse = await queryRunner.manager.save(
-      UserHouse,
-      userHouse,
-    );
+    try {
+      const createdUserHouse = await queryRunner.manager.save(
+        UserHouse,
+        userHouse,
+      );
 
-    return createdUserHouse;
+      return createdUserHouse;
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException(error);
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async getUsersHouseByHouseId(houseId: number) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
 
-    const usersFound = await queryRunner.manager.find(User, {
-      where: {
-        userHouses: {
-          houseId: Equal(houseId),
+    try {
+      const usersFound = await queryRunner.manager.find(User, {
+        where: {
+          userHouses: {
+            houseId: Equal(houseId),
+          },
         },
-      },
-    });
+      });
 
-    return usersFound;
+      return usersFound;
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException(error);
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async getUserHouseByHouseIdUserId(houseId: number, userId: number) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
 
-    const userHouseFound = await queryRunner.manager.findOne(UserHouse, {
-      where: {
-        userId: Equal(userId),
-        houseId: Equal(houseId),
-      },
-      relations: {
-        role: true,
-      },
-    });
+    try {
+      const userHouseFound = await queryRunner.manager.findOne(UserHouse, {
+        where: {
+          userId: Equal(userId),
+          houseId: Equal(houseId),
+        },
+        relations: {
+          role: true,
+        },
+      });
 
-    return userHouseFound;
+      return userHouseFound;
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException(error);
+    } finally {
+      await queryRunner.release();
+    }
   }
 }
