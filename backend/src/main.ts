@@ -7,13 +7,25 @@ import {
 } from '@nestjs/swagger';
 import { customJsSwagger } from './swagger/custom';
 import cookieParser from 'cookie-parser';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ['verbose', 'debug', 'warn', 'error', 'fatal', 'log'],
   });
 
+  //Cookie Parser
   app.use(cookieParser());
+
+  //Validation Pipe
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
 
   //SWAGGER
   const config = new DocumentBuilder()

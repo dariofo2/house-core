@@ -11,8 +11,8 @@ import { Request } from 'express';
 import User from 'src/db/entities/user/user.entity';
 
 @Injectable()
-export default class AuthGuard implements CanActivate {
-  readonly logger = new Logger(AuthGuard.name);
+export default class AuthApiGuard implements CanActivate {
+  readonly logger = new Logger(AuthApiGuard.name);
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
@@ -38,8 +38,7 @@ export default class AuthGuard implements CanActivate {
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] =
-      (request.cookies['jwtToken'] as string | undefined)?.split(' ') ?? [];
+    const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
   }
 }
