@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import UserRole from './user-role.entity';
+import UserHouse from '../house/user-house.entity';
 
 @Entity()
 export default class Role {
@@ -30,4 +31,10 @@ export default class Role {
     onDelete: 'CASCADE',
   })
   usersRole: UserRole[];
+
+  @OneToMany(() => UserHouse, (userHouse) => userHouse.role, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
+  usersHouse: UserHouse[];
 }

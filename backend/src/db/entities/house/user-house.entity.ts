@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import User from '../user/user.entity';
 import House from './house.entity';
+import Role from '../user/role.entity';
 
 @Entity()
 export default class UserHouse {
@@ -20,6 +21,9 @@ export default class UserHouse {
 
   @Column()
   houseId: number;
+
+  @Column()
+  roleId: number;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -40,4 +44,11 @@ export default class UserHouse {
   })
   @JoinColumn({ name: 'houseId' })
   house: House;
+
+  @ManyToOne(() => Role, (role) => role.usersHouse, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'roleId' })
+  role: Role;
 }

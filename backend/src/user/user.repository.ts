@@ -149,4 +149,13 @@ export default class UserRepository {
 
     return rolesEnumArray;
   }
+
+  async getRoles() {
+    const queryRunner = this.datasource.createQueryRunner();
+    await queryRunner.connect();
+
+    const roles = await queryRunner.manager.find(Role);
+
+    return roles;
+  }
 }
