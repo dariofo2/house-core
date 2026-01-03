@@ -11,8 +11,8 @@ import { Request } from 'express';
 import User from 'src/db/entities/user/user.entity';
 
 @Injectable()
-export default class AuthenticationGuard implements CanActivate {
-  readonly logger = new Logger(AuthenticationGuard.name);
+export default class AuthGuard implements CanActivate {
+  readonly logger = new Logger(AuthGuard.name);
   constructor(
     private jwtService: JwtService,
     private configService: ConfigService,

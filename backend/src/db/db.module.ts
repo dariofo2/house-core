@@ -26,6 +26,7 @@ import ProductBatch from './entities/product/product-batch.entity';
         migrationsTableName: 'migration',
         migrations: ['/src/db/migrations/*-migration.ts'],
         migrationsTransactionMode: 'all',
+        autoLoadEntities: true,
         synchronize: false,
       }),
     }),

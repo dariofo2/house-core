@@ -6,11 +6,14 @@ import {
   SwaggerModule,
 } from '@nestjs/swagger';
 import { customJsSwagger } from './swagger/custom';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ['verbose', 'debug', 'warn', 'error', 'fatal', 'log'],
   });
+
+  app.use(cookieParser());
 
   //SWAGGER
   const config = new DocumentBuilder()

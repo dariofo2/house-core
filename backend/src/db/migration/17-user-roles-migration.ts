@@ -1,4 +1,4 @@
-import { hash } from 'node:crypto';
+import { createHash } from 'node:crypto';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 import * as bc from 'bcrypt';
 
@@ -6,7 +6,10 @@ export class Migration17userRoles implements MigrationInterface {
   name = 'Migration1767383173435';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    const password = hash('sha256', Buffer.from('admin', 'utf-8'));
+    const password = createHash('sha256')
+      .update(Buffer.from('admin', 'utf8'))
+      .digest('hex');
+    //const password = hash('sha256', Buffer.from('admin', 'utf-8'));
     const hashBcrypt = await bc.hash(password, 4);
 
     await queryRunner.query(
