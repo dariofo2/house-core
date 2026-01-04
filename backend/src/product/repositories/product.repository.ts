@@ -114,6 +114,9 @@ export default class ProductRepository {
           where: {
             id: Equal(id),
           },
+          relations: {
+            product: true,
+          },
         },
       );
 

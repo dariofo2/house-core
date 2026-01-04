@@ -20,8 +20,8 @@ export default class ProductBatch {
   @Column()
   quantity: number;
 
-  @Column({ type: 'timestamp' })
-  expirationDate: Date;
+  @Column({ type: 'timestamp', nullable: true })
+  expirationDate: Date | null;
 
   @CreateDateColumn()
   createdAt: Date;
