@@ -205,4 +205,45 @@ export default class HouseService {
 
     return await this.houseRepository.deleteUserHouse(userHouseToUpdate.id);
   }
+
+  // PERMISSIONS
+  async checkIfUserisOnHouseAndAdmin(user: User, houseId: number) {
+    const userHouseFound =
+      await this.houseRepository.getUserHouseByHouseIdUserId(houseId, user.id);
+
+    if (!userHouseFound)
+      throw new BadRequestException(
+        'You are not in that House or House doesnt Exist',
+      );
+
+    if ((userHouseFound.role.name as RoleName) != RoleName.ADMIN)
+      throw new ForbiddenException('Only House Admins can delete House');
+  }
+
+  // PERMISSIONS
+  async checkIfUserisOnHouseAndUser(user: User, houseId: number) {
+    const userHouseFound =
+      await this.houseRepository.getUserHouseByHouseIdUserId(houseId, user.id);
+
+    if (!userHouseFound)
+      throw new BadRequestException(
+        'You are not in that House or House doesnt Exist',
+      );
+
+    if (
+      (userHouseFound.role.name as RoleName) != RoleName.USER ||
+      (userHouseFound.role.name as RoleName) != RoleName.ADMIN
+    )
+      throw new ForbiddenException('Only House Admins can delete House');
+  }
+
+  async checkIfUserisOnHouse(user: User, houseId: number) {
+    const userHouseFound =
+      await this.houseRepository.getUserHouseByHouseIdUserId(houseId, user.id);
+
+    if (!userHouseFound)
+      throw new BadRequestException(
+        'You are not in that House or House doesnt Exist',
+      );
+  }
 }

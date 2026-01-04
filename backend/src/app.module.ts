@@ -6,6 +6,7 @@ import DBModule from './db/db.module';
 import UserModule from './user/user.module';
 import AuthModule from './auth/auth.module';
 import HouseModule from './house/house.module';
+import ProductModule from './product/product.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import HouseModule from './house/house.module';
     UserModule,
     AuthModule,
     HouseModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [AppService],
