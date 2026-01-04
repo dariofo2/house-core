@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber } from 'class-validator';
+import { IsNumber, IsOptional } from 'class-validator';
 
 export default class UpdateProductBatchDTO {
   @IsNumber()
@@ -10,6 +10,7 @@ export default class UpdateProductBatchDTO {
   @ApiProperty({ example: 1 })
   quantity: number;
 
+  @IsOptional()
   @ApiProperty({ nullable: true, example: null })
   expirationDate: Date | null;
 }

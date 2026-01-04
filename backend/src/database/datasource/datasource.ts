@@ -16,7 +16,7 @@ export const datasource: DataSource = new DataSource({
   migrationsTableName: 'migration',
   synchronize: false,
   migrationsRun: false,
-  migrations: ['src/db/migration/*-migration.ts'],
+  migrations: ['src/database/migration/*-migration.ts'],
   migrationsTransactionMode: 'all',
   logging: true,
 });

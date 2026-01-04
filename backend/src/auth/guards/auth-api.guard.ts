@@ -8,7 +8,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import User from 'src/db/entities/user/user.entity';
+import User from 'src/database/entities/user/user.entity';
 
 @Injectable()
 export default class AuthApiGuard implements CanActivate {

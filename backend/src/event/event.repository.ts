@@ -3,7 +3,7 @@ import {
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
-import Event from 'src/db/entities/event/event.entity';
+import Event from 'src/database/entities/event/event.entity';
 import { DataSource, Equal } from 'typeorm';
 
 @Injectable()

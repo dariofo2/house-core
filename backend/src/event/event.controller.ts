@@ -15,7 +15,7 @@ import RoleGuard from 'src/auth/guards/role.guard';
 import { Roles } from 'src/common/decorator/roles.decorator';
 import { user } from 'src/common/decorator/user.decorator';
 import { RoleName } from 'src/common/enum/role.enum';
-import User from 'src/db/entities/user/user.entity';
+import User from 'src/database/entities/user/user.entity';
 import EventService from './event.service';
 import CreateEventDTO from './dto/create-event.dto';
 import UpdateEventDTO from './dto/update-event.dto';

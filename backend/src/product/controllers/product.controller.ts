@@ -13,7 +13,7 @@ import AuthGuard from 'src/auth/guards/auth.guard';
 import RoleGuard from 'src/auth/guards/role.guard';
 import { Roles } from 'src/common/decorator/roles.decorator';
 import { RoleName } from 'src/common/enum/role.enum';
-import User from 'src/db/entities/user/user.entity';
+import User from 'src/database/entities/user/user.entity';
 import { user } from 'src/common/decorator/user.decorator';
 import ProductService from '../services/product.service';
 import CreateProductDTO from '../dto/create-product.dto';
@@ -23,7 +23,7 @@ import UpdateProductBatchDTO from '../dto/update-product-batch.dto';
 
 @Roles(RoleName.ADMIN, RoleName.USER)
 @UseGuards(AuthGuard, RoleGuard)
-@Controller('category')
+@Controller('product')
 export default class ProductController {
   readonly logger = new Logger(ProductController.name);
   constructor(private readonly productService: ProductService) {}

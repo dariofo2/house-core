@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import ProductRepository from '../repositories/product.repository';
-import User from 'src/db/entities/user/user.entity';
+import User from 'src/database/entities/user/user.entity';
 import CreateProductDTO from '../dto/create-product.dto';
 import HouseService from 'src/house/house.service';
 import { plainToInstance } from 'class-transformer';
-import Product from 'src/db/entities/product/product.entity';
+import Product from 'src/database/entities/product/product.entity';
 import CreateProductBatchDTO from '../dto/create-product-batch.dto';
 import UpdateProductBatchDTO from '../dto/update-product-batch.dto';
-import ProductBatch from 'src/db/entities/product/product-batch.entity';
+import ProductBatch from 'src/database/entities/product/product-batch.entity';
 import UpdateProductDTO from '../dto/update-product.dto';
 
 @Injectable()
@@ -24,9 +24,18 @@ export default class ProductService {
       createProductDTO.houseId,
     );
 
-    return await this.productRepository.createProduct(
+    const createdProduct = await this.productRepository.createProduct(
       plainToInstance(Product, createProductDTO),
     );
+
+    const newProductBatch = new ProductBatch();
+    newProductBatch.productId = createdProduct.id;
+    newProductBatch.quantity = 0;
+    newProductBatch.expirationDate = null;
+
+    await this.productRepository.createProductBatch(newProductBatch);
+
+    return createdProduct;
   }
 
   async updateProduct(user: User, updateProductDTO: UpdateProductDTO) {

@@ -5,10 +5,10 @@ import {
   Logger,
 } from '@nestjs/common';
 import { RoleName } from 'src/common/enum/role.enum';
-import Role from 'src/db/entities/user/role.entity';
-import RoleEntity from 'src/db/entities/user/role.entity';
-import UserRole from 'src/db/entities/user/user-role.entity';
-import User from 'src/db/entities/user/user.entity';
+import Role from 'src/database/entities/user/role.entity';
+import RoleEntity from 'src/database/entities/user/role.entity';
+import UserRole from 'src/database/entities/user/user-role.entity';
+import User from 'src/database/entities/user/user.entity';
 import { DataSource, Equal } from 'typeorm';
 
 @Injectable()

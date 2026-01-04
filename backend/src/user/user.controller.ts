@@ -15,7 +15,7 @@ import CreateUserDTO from './dto/create-user.dto';
 import RoleGuard from 'src/auth/guards/role.guard';
 import { RoleName } from 'src/common/enum/role.enum';
 import { Roles } from 'src/common/decorator/roles.decorator';
-import User from 'src/db/entities/user/user.entity';
+import User from 'src/database/entities/user/user.entity';
 import { user } from 'src/common/decorator/user.decorator';
 import AuthGuard from 'src/auth/guards/auth.guard';
 import UpdateUserDTO from './dto/update-user.dto';

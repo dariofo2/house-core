@@ -2,7 +2,7 @@ import { forwardRef, Module } from '@nestjs/common';
 import UserRepository from './user.repository';
 import UserService from './user.service';
 import UserController from './user.controller';
-import DBModule from 'src/db/db.module';
+import DBModule from 'src/database/db.module';
 import AuthModule from 'src/auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 

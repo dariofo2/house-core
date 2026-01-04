@@ -5,13 +5,13 @@ import {
   Logger,
 } from '@nestjs/common';
 import HouseRepository from './house.repository';
-import User from 'src/db/entities/user/user.entity';
+import User from 'src/database/entities/user/user.entity';
 import CreateHouseDTO from './dto/create-house.dto';
 import { plainToInstance } from 'class-transformer';
-import House from 'src/db/entities/house/house.entity';
+import House from 'src/database/entities/house/house.entity';
 import UpdateHouseDTO from './dto/update-house.dto';
 import { RoleName } from 'src/common/enum/role.enum';
-import UserHouse from 'src/db/entities/house/user-house.entity';
+import UserHouse from 'src/database/entities/house/user-house.entity';
 import AddUserHouseDTO from './dto/add-user-house.dto';
 import UpdateUserHouseDTO from './dto/update-user-house.dto';
 import UserRepository from 'src/user/user.repository';
@@ -217,7 +217,9 @@ export default class HouseService {
       );
 
     if ((userHouseFound.role.name as RoleName) != RoleName.ADMIN)
-      throw new ForbiddenException('Only House Admins can delete House');
+      throw new ForbiddenException(
+        'Only House Admins can Make this action in this House',
+      );
   }
 
   // PERMISSIONS
@@ -231,10 +233,12 @@ export default class HouseService {
       );
 
     if (
-      (userHouseFound.role.name as RoleName) != RoleName.USER ||
+      (userHouseFound.role.name as RoleName) != RoleName.USER &&
       (userHouseFound.role.name as RoleName) != RoleName.ADMIN
     )
-      throw new ForbiddenException('Only House Admins can delete House');
+      throw new ForbiddenException(
+        'Only House Admins/Users can do this action in this House',
+      );
   }
 
   async checkIfUserisOnHouse(user: User, houseId: number) {

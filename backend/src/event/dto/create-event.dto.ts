@@ -15,4 +15,8 @@ export default class CreateEventDTO {
   @IsNotEmpty()
   @ApiProperty({ example: 'description example event' })
   description: string;
+
+  @IsNumber()
+  @ApiProperty({ example: 1 })
+  maxDays: number;
 }

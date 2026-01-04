@@ -8,7 +8,7 @@ import {
 import CreateUserDTO from './dto/create-user.dto';
 import UserRepository from './user.repository';
 import { plainToInstance } from 'class-transformer';
-import User from 'src/db/entities/user/user.entity';
+import User from 'src/database/entities/user/user.entity';
 import { ConfigService } from '@nestjs/config';
 import { RoleName } from 'src/common/enum/role.enum';
 import UpdateUserDTO from './dto/update-user.dto';

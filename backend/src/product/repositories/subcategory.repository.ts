@@ -3,7 +3,7 @@ import {
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
-import Subcategory from 'src/db/entities/product/subcategory.entity';
+import Subcategory from 'src/database/entities/product/subcategory.entity';
 import { DataSource, Equal } from 'typeorm';
 
 @Injectable()

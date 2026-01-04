@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import SubcategoryRepository from '../repositories/subcategory.repository';
 import HouseService from 'src/house/house.service';
-import User from 'src/db/entities/user/user.entity';
+import User from 'src/database/entities/user/user.entity';
 import CreateSubcategoryDTO from '../dto/create-subcategory.dto';
 import UpdateSubcategoryDTO from '../dto/update-subcategory.dto';
 import { plainToInstance } from 'class-transformer';
-import Subcategory from 'src/db/entities/product/subcategory.entity';
+import Subcategory from 'src/database/entities/product/subcategory.entity';
 import CategoryRepository from '../repositories/category.repository';
 
 @Injectable()

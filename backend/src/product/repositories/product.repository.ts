@@ -3,8 +3,8 @@ import {
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
-import ProductBatch from 'src/db/entities/product/product-batch.entity';
-import Product from 'src/db/entities/product/product.entity';
+import ProductBatch from 'src/database/entities/product/product-batch.entity';
+import Product from 'src/database/entities/product/product.entity';
 import { DataSource, Equal } from 'typeorm';
 
 @Injectable()

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export default class UpdateProductDTO {
   @IsNumber()
@@ -16,15 +16,19 @@ export default class UpdateProductDTO {
   @ApiProperty({ example: 'product Example' })
   description: string;
 
+  @IsOptional()
   @ApiProperty({ nullable: true, example: null })
-  unity?: string;
+  unity?: string | null;
 
-  @ApiProperty({ nullable: true, example: null })
+  @IsOptional()
+  @ApiProperty({ example: 1 })
   step?: number;
 
+  @IsOptional()
   @ApiProperty({ nullable: true, example: null })
-  photo?: string;
+  photo?: string | null;
 
-  @ApiProperty({ nullable: true, example: null })
+  @IsOptional()
+  @ApiProperty({ example: 1 })
   minQuantity?: number;
 }

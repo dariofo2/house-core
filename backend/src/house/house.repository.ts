@@ -3,9 +3,9 @@ import {
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
-import House from 'src/db/entities/house/house.entity';
-import UserHouse from 'src/db/entities/house/user-house.entity';
-import User from 'src/db/entities/user/user.entity';
+import House from 'src/database/entities/house/house.entity';
+import UserHouse from 'src/database/entities/house/user-house.entity';
+import User from 'src/database/entities/user/user.entity';
 import { DataSource, Equal } from 'typeorm';
 
 @Injectable()

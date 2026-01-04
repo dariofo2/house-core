@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import User from 'src/db/entities/user/user.entity';
+import User from 'src/database/entities/user/user.entity';
 import EventRepository from './event.repository';
 import CreateEventDTO from './dto/create-event.dto';
 import UpdateEventDTO from './dto/update-event.dto';
 import HouseService from 'src/house/house.service';
 import { plainToInstance } from 'class-transformer';
-import Event from 'src/db/entities/event/event.entity';
+import Event from 'src/database/entities/event/event.entity';
 
 @Injectable()
 export default class EventService {
@@ -26,7 +26,7 @@ export default class EventService {
       createEventDTO.houseId,
     );
 
-    await this.eventRepository.createEvent(
+    return await this.eventRepository.createEvent(
       plainToInstance(Event, createEventDTO),
     );
   }
@@ -41,7 +41,7 @@ export default class EventService {
       eventFound.houseId,
     );
 
-    await this.eventRepository.updateEvent(
+    return await this.eventRepository.updateEvent(
       plainToInstance(Event, updateEventDTO),
     );
   }
@@ -71,6 +71,6 @@ export default class EventService {
 
     eventFound.updatedAt = new Date();
 
-    await this.eventRepository.updateEvent(eventFound);
+    return await this.eventRepository.updateEvent(eventFound);
   }
 }
