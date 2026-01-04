@@ -55,4 +55,9 @@ export default class EventController {
   async deleteEvent(@Param('id', ParseIntPipe) id: number, @user() user: User) {
     return await this.eventService.deleteEvent(user, id);
   }
+
+  @Post('reset/:id')
+  async resetEvent(@Param('id', ParseIntPipe) id: number, @user() user: User) {
+    return await this.eventService.resetTimeEvent(user, id);
+  }
 }
