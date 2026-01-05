@@ -23,6 +23,6 @@ import ProductService from './services/product.service';
     SubcategoryRepository,
     ProductRepository,
   ],
-  exports: [],
+  exports: [ProductRepository],
 })
 export default class ProductModule {}

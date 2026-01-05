@@ -17,13 +17,19 @@ export default class CookRecipe {
   id: number;
 
   @Column()
+  houseId: number;
+
+  @Column()
   name: string;
 
   @Column()
   description: string;
 
-  @Column()
-  maxDays: number;
+  @Column({ type: 'text', array: true })
+  steps: string[];
+
+  @Column({ nullable: true })
+  photo: string;
 
   @CreateDateColumn()
   createdAt: Date;

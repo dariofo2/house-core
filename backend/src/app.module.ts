@@ -8,6 +8,8 @@ import AuthModule from './auth/auth.module';
 import HouseModule from './house/house.module';
 import ProductModule from './product/product.module';
 import EventModule from './event/event.module';
+import { JwtModule } from '@nestjs/jwt';
+import CookRecipeModule from './cook-recipe/cook-recipe.module';
 
 @Module({
   imports: [
@@ -15,9 +17,11 @@ import EventModule from './event/event.module';
     DBModule,
     UserModule,
     AuthModule,
+    JwtModule,
     HouseModule,
     ProductModule,
     EventModule,
+    CookRecipeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

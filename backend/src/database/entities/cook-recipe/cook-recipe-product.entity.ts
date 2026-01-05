@@ -20,6 +20,9 @@ export default class CookRecipeProduct {
   @Column()
   productId: number;
 
+  @Column()
+  quantity: number;
+
   @CreateDateColumn()
   createdAt: Date;
 
