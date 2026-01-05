@@ -55,7 +55,7 @@ export default class UserService {
 
     createUserDTO.password = await hash(createUserDTO.password, 4);
 
-    const createdUser = await this.userRepository.createUser(
+    const createdUser = await this.userRepository.saveUser(
       plainToInstance(User, createUserDTO, { excludeExtraneousValues: true }),
     );
 
@@ -76,7 +76,7 @@ export default class UserService {
   async createUserAdmin(createUserDTO: CreateUserDTO) {
     createUserDTO.password = await hash(createUserDTO.password, 4);
 
-    const createdUser = await this.userRepository.createUser(
+    const createdUser = await this.userRepository.saveUser(
       plainToInstance(User, createUserDTO, { excludeExtraneousValues: true }),
     );
 
@@ -107,9 +107,7 @@ export default class UserService {
     const foundUser = await this.userRepository.getUser(userId);
     if (!foundUser) throw new BadRequestException('User Doesnt exist in DB');
 
-    const deletedUser = await this.userRepository.deleteUser(foundUser);
-    if (!deletedUser.affected)
-      throw new BadRequestException('Couldnt Delete nothing');
+    await this.userRepository.deleteUser(foundUser);
 
     return plainToInstance(UserOutputDTO, foundUser, {
       excludeExtraneousValues: true,
@@ -124,7 +122,7 @@ export default class UserService {
         'You are Not Allowed to Update other User If not Admin',
       );
 
-    const updatedUser = await this.userRepository.updateUser(
+    const updatedUser = await this.userRepository.saveUser(
       plainToInstance(User, updateUserDTO),
     );
 
@@ -157,7 +155,7 @@ export default class UserService {
         throw new UnauthorizedException('Last Password doesnt Match');
     }
 
-    const updatedUser = await this.userRepository.updateUser(newUser);
+    const updatedUser = await this.userRepository.saveUser(newUser);
 
     return plainToInstance(UserOutputDTO, updatedUser, {
       excludeExtraneousValues: true,
@@ -203,15 +201,13 @@ export default class UserService {
       roleFound.id,
     );
 
+    this.logger.warn(userRoleFound);
     if (!userRoleFound)
       throw new BadRequestException(
         'Relation of this user and Role Doesnt Exist',
       );
 
-    const deletedUserRole =
-      await this.userRepository.deleteUserRole(userRoleFound);
-    if (!deletedUserRole.affected)
-      throw new BadRequestException('Couldnt Delete Relation');
+    await this.userRepository.deleteUserRole(userRoleFound);
 
     return plainToInstance(RoleOutputDTO, roleFound, {
       excludeExtraneousValues: true,

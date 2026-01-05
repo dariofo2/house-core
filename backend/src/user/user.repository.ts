@@ -77,7 +77,7 @@ export default class UserRepository {
     }
   }
 
-  async createUser(user: User) {
+  async saveUser(user: User) {
     const queryRunner = this.datasource.createQueryRunner();
     await queryRunner.connect();
 
@@ -98,25 +98,9 @@ export default class UserRepository {
     await queryRunner.connect();
 
     try {
-      const userDeleted = await queryRunner.manager.delete(User, user);
+      const userDeleted = await queryRunner.manager.remove(User, user);
 
       return userDeleted;
-    } catch (error) {
-      this.logger.error(error);
-      throw new InternalServerErrorException(error);
-    } finally {
-      await queryRunner.release();
-    }
-  }
-
-  async updateUser(user: User) {
-    const queryRunner = this.datasource.createQueryRunner();
-    await queryRunner.connect();
-
-    try {
-      const userFound = await queryRunner.manager.save(User, user);
-
-      return userFound;
     } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException(error);
@@ -167,7 +151,7 @@ export default class UserRepository {
     await queryRunner.connect();
 
     try {
-      return await queryRunner.manager.delete(UserRole, userRole);
+      return await queryRunner.manager.remove(UserRole, userRole);
     } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException(error);
