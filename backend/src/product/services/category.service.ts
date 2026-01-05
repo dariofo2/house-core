@@ -6,6 +6,7 @@ import CreateCategoryDTO from '../dto/create-category.dto';
 import UpdateCategoryDTO from '../dto/update-category.dto';
 import { plainToInstance } from 'class-transformer';
 import Category from 'src/database/entities/product/category.entity';
+import CategoryOutputDTO from '../dto-output/category-output.dto';
 
 @Injectable()
 export default class CategoryService {
@@ -25,7 +26,7 @@ export default class CategoryService {
       plainToInstance(Category, createCategoryDTO),
     );
 
-    return createdCategory;
+    return plainToInstance(CategoryOutputDTO, createdCategory);
   }
 
   async updateCategory(user: User, updateCategoryDTO: UpdateCategoryDTO) {
@@ -40,9 +41,11 @@ export default class CategoryService {
       foundCategory.houseId,
     );
 
-    return await this.categoryRepository.updateCategory(
+    const updatedCategory = await this.categoryRepository.updateCategory(
       plainToInstance(Category, updateCategoryDTO),
     );
+
+    return plainToInstance(CategoryOutputDTO, updatedCategory);
   }
 
   async deleteCategory(user: User, categoryId: number) {
@@ -60,11 +63,18 @@ export default class CategoryService {
 
   async getCategoriesFromHouse(user: User, houseId: number) {
     await this.houseService.checkIfUserisOnHouse(user, houseId);
-    return await this.categoryRepository.listCategoriesByHouseId(houseId);
+
+    const listCategories =
+      await this.categoryRepository.listCategoriesByHouseId(houseId);
+
+    return plainToInstance(CategoryOutputDTO, listCategories);
   }
 
   async getCategoriesFromHouseJoin(user: User, houseId: number) {
     await this.houseService.checkIfUserisOnHouse(user, houseId);
-    return await this.categoryRepository.listCategoriesByHouseIdJoin(houseId);
+    const listCategoriesJoined =
+      await this.categoryRepository.listCategoriesByHouseIdJoin(houseId);
+
+    return plainToInstance(CategoryOutputDTO, listCategoriesJoined);
   }
 }

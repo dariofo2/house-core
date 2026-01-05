@@ -15,6 +15,8 @@ import UserHouse from 'src/database/entities/house/user-house.entity';
 import AddUserHouseDTO from './dto/add-user-house.dto';
 import UpdateUserHouseDTO from './dto/update-user-house.dto';
 import UserRepository from 'src/user/user.repository';
+import UserHouseOutputDTO from './dto-output/user-house-output.dto';
+import HouseOutputDTO from './dto-output/house-output.dto';
 
 @Injectable()
 export default class HouseService {
@@ -31,15 +33,19 @@ export default class HouseService {
     );
 
     if (!houseFound) throw new BadRequestException('House Doesnt Exist');
-    return houseFound;
+    return plainToInstance(HouseOutputDTO, houseFound);
   }
 
   async listHouses(user: User) {
-    return await this.houseRepository.listUserHouses(user.id);
+    const housesFound = await this.houseRepository.listUserHouses(user.id);
+
+    return plainToInstance(HouseOutputDTO, housesFound);
   }
 
   async listAllHouses() {
-    return await this.houseRepository.listAllHouses();
+    const housesFound = await this.houseRepository.listAllHouses();
+
+    return plainToInstance(HouseOutputDTO, housesFound);
   }
 
   async createHouse(user: User, createHouseDTO: CreateHouseDTO) {
@@ -60,7 +66,8 @@ export default class HouseService {
 
     if (!userHouseCreated)
       throw new BadRequestException('Couldnt relation User with House');
-    return createdHouse;
+
+    return plainToInstance(HouseOutputDTO, createdHouse);
   }
 
   async updateHouse(user: User, updateHouseDTO: UpdateHouseDTO) {
@@ -117,7 +124,10 @@ export default class HouseService {
     )
       throw new ForbiddenException('Only House Admins can delete House');
 
-    return await this.houseRepository.getUsersHouseByHouseId(houseId);
+    const usersHouse =
+      await this.houseRepository.getUsersHouseByHouseId(houseId);
+
+    return plainToInstance(UserHouseOutputDTO, usersHouse);
   }
 
   async addUserToHouse(user: User, addUserHouseDTO: AddUserHouseDTO) {

@@ -1,10 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 
-export default class HouseOutputDTO {
+export default class EventOutputDTO {
   @Expose()
   @ApiProperty()
   id: number;
+
+  @Expose()
+  @ApiProperty()
+  houseId: number;
 
   @Expose()
   @ApiProperty()
@@ -13,6 +17,10 @@ export default class HouseOutputDTO {
   @Expose()
   @ApiProperty()
   description: string;
+
+  @Expose()
+  @ApiProperty()
+  maxDays: number;
 
   @Expose()
   @ApiProperty()

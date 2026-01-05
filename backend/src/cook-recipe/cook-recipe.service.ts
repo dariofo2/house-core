@@ -10,6 +10,8 @@ import ProductRepository from 'src/product/repositories/product.repository';
 import CreateCookRecipeProductDTO from './dto/create-cook-recipe-product.dto';
 import UpdateCookRecipeProductDTO from './dto/update-cook-recipe-product.dto';
 import CookRecipeProduct from 'src/database/entities/cook-recipe/cook-recipe-product.entity';
+import CookRecipeOutputDTO from './dto-output/cook-recipe.dto';
+import CookRecipeProductOutputDTO from './dto-output/cook-recipe-product.dto';
 
 @Injectable()
 export default class CookRecipeService {
@@ -28,7 +30,7 @@ export default class CookRecipeService {
         houseId,
       );
 
-    return listCookRecipes;
+    return plainToInstance(CookRecipeOutputDTO, listCookRecipes);
   }
 
   async createCookRecipe(user: User, createCookRecipeDTO: CreateCookRecipeDTO) {
@@ -41,7 +43,7 @@ export default class CookRecipeService {
       plainToInstance(CookRecipe, createCookRecipeDTO),
     );
 
-    return cookRecipeCreated;
+    return plainToInstance(CookRecipeOutputDTO, cookRecipeCreated);
   }
 
   async updateCookRecipe(user: User, updateCookRecipeDTO: UpdateCookRecipeDTO) {
@@ -57,9 +59,11 @@ export default class CookRecipeService {
       cookRecipeFound.houseId,
     );
 
-    return this.cookRecipeRepository.updateCookRecipe(
+    const updatedCookRecipe = this.cookRecipeRepository.updateCookRecipe(
       plainToInstance(CookRecipe, updateCookRecipeDTO),
     );
+
+    return plainToInstance(CookRecipeOutputDTO, updatedCookRecipe);
   }
 
   async deleteCookRecipe(user: User, id: number) {
@@ -88,8 +92,14 @@ export default class CookRecipeService {
 
     await this.houseService.checkIfUserisOnHouseAndUser(user, houseId);
 
-    return await this.cookRecipeRepository.createCookRecipeProduct(
-      plainToInstance(CookRecipeProduct, createCookRecipeProductDTO),
+    const createdCookRecipeProduct =
+      await this.cookRecipeRepository.createCookRecipeProduct(
+        plainToInstance(CookRecipeProduct, createCookRecipeProductDTO),
+      );
+
+    return plainToInstance(
+      CookRecipeProductOutputDTO,
+      createdCookRecipeProduct,
     );
   }
 
@@ -114,9 +124,12 @@ export default class CookRecipeService {
     await this.houseService.checkIfUserisOnHouseAndUser(user, houseId);
 
     cookRecipeProductFound.quantity = updateCookRecipeProductDTO.quantity;
-    return await this.cookRecipeRepository.updateCookRecipeProduct(
-      plainToInstance(CookRecipeProduct, cookRecipeProductFound),
-    );
+    const cookRecipeUpdated =
+      await this.cookRecipeRepository.updateCookRecipeProduct(
+        plainToInstance(CookRecipeProduct, cookRecipeProductFound),
+      );
+
+    return plainToInstance(CookRecipeProductOutputDTO, cookRecipeUpdated);
   }
   async deleteCookRecipeProduct(
     user: User,
@@ -192,6 +205,9 @@ export default class CookRecipeService {
       }
     }
 
-    return await this.cookRecipeRepository.updateCookRecipe(foundCookRecipe);
+    const updatedCookRecipe =
+      await this.cookRecipeRepository.updateCookRecipe(foundCookRecipe);
+
+    return plainToInstance(CookRecipeOutputDTO, updatedCookRecipe);
   }
 }

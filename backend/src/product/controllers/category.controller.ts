@@ -19,6 +19,8 @@ import User from 'src/database/entities/user/user.entity';
 import CategoryService from '../services/category.service';
 import { user } from 'src/common/decorator/user.decorator';
 import UpdateCategoryDTO from '../dto/update-category.dto';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import CategoryOutputDTO from '../dto-output/category-output.dto';
 
 @Roles(RoleName.ADMIN, RoleName.USER)
 @UseGuards(AuthGuard, RoleGuard)
@@ -28,6 +30,10 @@ export default class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Get('getByHouseJoinProduct/:houseId')
+  @ApiOperation({
+    summary: 'Get Categories with Subcategories with Products Join ALL',
+  })
+  @ApiResponse({ type: CategoryOutputDTO })
   async getCategoryJoinProduct(
     @Param('houseId', ParseIntPipe) houseId: number,
     @user() user: User,
@@ -36,6 +42,10 @@ export default class CategoryController {
   }
 
   @Post('create')
+  @ApiOperation({
+    summary: 'Create a Category',
+  })
+  @ApiResponse({ type: CategoryOutputDTO })
   async createCategory(
     @Body() createCategoryDTO: CreateCategoryDTO,
     @user() user: User,
@@ -44,6 +54,10 @@ export default class CategoryController {
   }
 
   @Put('update')
+  @ApiOperation({
+    summary: 'Update a Category',
+  })
+  @ApiResponse({ type: CategoryOutputDTO })
   async updateCategory(
     @Body() updateCategoryDTO: UpdateCategoryDTO,
     @user() user: User,
@@ -52,6 +66,10 @@ export default class CategoryController {
   }
 
   @Delete('delete/:id')
+  @ApiOperation({
+    summary: 'Delete a Category',
+  })
+  @ApiResponse({ type: CategoryOutputDTO })
   async deleteCategory(
     @Param('id', ParseIntPipe) id: number,
     @user() user: User,

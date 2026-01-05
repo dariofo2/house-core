@@ -18,6 +18,8 @@ import { user } from 'src/common/decorator/user.decorator';
 import CreateSubcategoryDTO from '../dto/create-subcategory.dto';
 import SubcategoryService from '../services/subcategory.service';
 import UpdateSubcategoryDTO from '../dto/update-subcategory.dto';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import SubcategoryOutputDTO from '../dto-output/subcategory-output.dto';
 
 @Roles(RoleName.ADMIN, RoleName.USER)
 @UseGuards(AuthGuard, RoleGuard)
@@ -27,6 +29,10 @@ export default class SubcategoryController {
   constructor(private readonly subcategoryService: SubcategoryService) {}
 
   @Post('create')
+  @ApiOperation({
+    summary: 'Create a Subcategory',
+  })
+  @ApiResponse({ type: SubcategoryOutputDTO })
   async createSubcategory(
     @Body() createSubcategoryDTO: CreateSubcategoryDTO,
     @user() user: User,
@@ -38,6 +44,10 @@ export default class SubcategoryController {
   }
 
   @Put('update')
+  @ApiOperation({
+    summary: 'Update a Subcategory',
+  })
+  @ApiResponse({ type: SubcategoryOutputDTO })
   async updateCategory(
     @Body() updateSubcategoryDTO: UpdateSubcategoryDTO,
     @user() user: User,
@@ -49,6 +59,10 @@ export default class SubcategoryController {
   }
 
   @Delete('delete/:id')
+  @ApiOperation({
+    summary: 'Delete a Subcategory',
+  })
+  @ApiResponse({ type: SubcategoryOutputDTO })
   async deleteCategory(
     @Param('id', ParseIntPipe) id: number,
     @user() user: User,

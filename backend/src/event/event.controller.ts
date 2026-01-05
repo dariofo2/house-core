@@ -19,6 +19,8 @@ import User from 'src/database/entities/user/user.entity';
 import EventService from './event.service';
 import CreateEventDTO from './dto/create-event.dto';
 import UpdateEventDTO from './dto/update-event.dto';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import EventOutputDTO from './dto-output/event-output.dto';
 
 @Roles(RoleName.ADMIN, RoleName.USER)
 @UseGuards(AuthGuard, RoleGuard)
@@ -28,6 +30,8 @@ export default class EventController {
   constructor(private readonly eventService: EventService) {}
 
   @Get('getByHouse/:houseId')
+  @ApiOperation({ summary: 'Get Events by House' })
+  @ApiResponse({ status: 200, type: [EventOutputDTO] })
   async getEventByHouseId(
     @Param('houseId', ParseIntPipe) houseId: number,
     @user() user: User,
@@ -36,6 +40,8 @@ export default class EventController {
   }
 
   @Post('create')
+  @ApiOperation({ summary: 'Create Event in House' })
+  @ApiResponse({ status: 200, type: EventOutputDTO })
   async createEvent(
     @Body() createEventDTO: CreateEventDTO,
     @user() user: User,
@@ -44,6 +50,8 @@ export default class EventController {
   }
 
   @Put('update')
+  @ApiOperation({ summary: 'Update Event in House' })
+  @ApiResponse({ status: 200, type: EventOutputDTO })
   async updateEvent(
     @Body() updateEventDTO: UpdateEventDTO,
     @user() user: User,
@@ -52,11 +60,15 @@ export default class EventController {
   }
 
   @Delete('delete/:id')
+  @ApiOperation({ summary: 'Delete Event in House' })
+  @ApiResponse({ status: 200, type: EventOutputDTO })
   async deleteEvent(@Param('id', ParseIntPipe) id: number, @user() user: User) {
     return await this.eventService.deleteEvent(user, id);
   }
 
   @Post('reset/:id')
+  @ApiOperation({ summary: 'Reset Timer Event in House' })
+  @ApiResponse({ status: 200, type: EventOutputDTO })
   async resetEvent(@Param('id', ParseIntPipe) id: number, @user() user: User) {
     return await this.eventService.resetTimeEvent(user, id);
   }

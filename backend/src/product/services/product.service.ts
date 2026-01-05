@@ -10,6 +10,8 @@ import UpdateProductBatchDTO from '../dto/update-product-batch.dto';
 import ProductBatch from 'src/database/entities/product/product-batch.entity';
 import UpdateProductDTO from '../dto/update-product.dto';
 import SubcategoryRepository from '../repositories/subcategory.repository';
+import ProductOutputDTO from '../dto-output/product-output.dto';
+import ProductBatchOutputDTO from '../dto-output/product-batch-output.dto';
 
 @Injectable()
 export default class ProductService {
@@ -49,7 +51,7 @@ export default class ProductService {
 
     await this.productRepository.createProductBatch(newProductBatch);
 
-    return createdProduct;
+    return plainToInstance(ProductOutputDTO, createdProduct);
   }
 
   async updateProduct(user: User, updateProductDTO: UpdateProductDTO) {
@@ -64,9 +66,11 @@ export default class ProductService {
       productFound.houseId,
     );
 
-    return await this.productRepository.updateProduct(
+    const updatedProduct = await this.productRepository.updateProduct(
       plainToInstance(Product, updateProductDTO),
     );
+
+    return plainToInstance(ProductOutputDTO, updatedProduct);
   }
 
   async deleteProduct(user: User, id: number) {
@@ -98,9 +102,11 @@ export default class ProductService {
       foundProductBatch.product.houseId,
     );
 
-    return await this.productRepository.createProductBatch(
+    const createdProductBatch = await this.productRepository.createProductBatch(
       plainToInstance(ProductBatch, createProductBatchDTO),
     );
+
+    return plainToInstance(ProductBatchOutputDTO, createdProductBatch);
   }
 
   async updateProductBatch(
@@ -119,9 +125,11 @@ export default class ProductService {
       foundProductBatch.product.houseId,
     );
 
-    return await this.productRepository.updateProductBatch(
+    const updatedProductBatch = await this.productRepository.updateProductBatch(
       plainToInstance(ProductBatch, updateProductBatchDTO),
     );
+
+    return plainToInstance(ProductBatchOutputDTO, updatedProductBatch);
   }
 
   async deleteProductBatch(user: User, id: number) {
@@ -152,7 +160,10 @@ export default class ProductService {
     foundProductBatch.quantity =
       foundProductBatch.quantity + foundProductBatch.product.step;
 
-    return await this.productRepository.updateProductBatch(foundProductBatch);
+    const updatedProductBatch =
+      await this.productRepository.updateProductBatch(foundProductBatch);
+
+    return plainToInstance(ProductBatchOutputDTO, updatedProductBatch);
   }
 
   async decrementProductBatch(user: User, id: number) {
@@ -171,6 +182,9 @@ export default class ProductService {
 
     if (foundProductBatch.quantity < 0) foundProductBatch.quantity = 0;
 
-    return await this.productRepository.updateProductBatch(foundProductBatch);
+    const updatedProductBatch =
+      await this.productRepository.updateProductBatch(foundProductBatch);
+
+    return plainToInstance(ProductBatchOutputDTO, updatedProductBatch);
   }
 }

@@ -21,6 +21,9 @@ import CreateCookRecipeDTO from './dto/create-cook-recipe.dto';
 import CreateCookRecipeProductDTO from './dto/create-cook-recipe-product.dto';
 import UpdateCookRecipeProductDTO from './dto/update-cook-recipe-product.dto';
 import UpdateCookRecipeDTO from './dto/update-cook-recipe.dto';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import CookRecipeOutputDTO from './dto-output/cook-recipe.dto';
+import CookRecipeProductOutputDTO from './dto-output/cook-recipe-product.dto';
 
 @Roles(RoleName.ADMIN, RoleName.USER)
 @UseGuards(AuthGuard, RoleGuard)
@@ -30,6 +33,8 @@ export default class CookRecipeController {
   constructor(private readonly cookRecipeService: CookRecipeService) {}
 
   @Get('listJoinByHouse/:houseId')
+  @ApiOperation({ summary: 'List Join CookRecipes By House' })
+  @ApiResponse({ status: 200, type: CookRecipeOutputDTO })
   async listJoinByHouse(
     @Param('houseId', ParseIntPipe) houseId: number,
     @user() user: User,
@@ -41,6 +46,8 @@ export default class CookRecipeController {
   }
 
   @Post('create')
+  @ApiOperation({ summary: 'Create Cook Recipe' })
+  @ApiResponse({ status: 200, type: CookRecipeOutputDTO })
   async createCookRecipe(
     @Body() createCookRecipeDTO: CreateCookRecipeDTO,
     @user() user: User,
@@ -52,6 +59,8 @@ export default class CookRecipeController {
   }
 
   @Put('update')
+  @ApiOperation({ summary: 'Update Cook Recipe' })
+  @ApiResponse({ status: 200, type: CookRecipeOutputDTO })
   async updateCookRecipe(
     @Body() updateCookRecipeDTO: UpdateCookRecipeDTO,
     @user() user: User,
@@ -63,6 +72,8 @@ export default class CookRecipeController {
   }
 
   @Delete('delete/:id')
+  @ApiOperation({ summary: 'Delete Cook Recipe' })
+  @ApiResponse({ status: 200, type: CookRecipeOutputDTO })
   async deleteCookRecipe(
     @Param('id', ParseIntPipe) id: number,
     @user() user: User,
@@ -72,6 +83,8 @@ export default class CookRecipeController {
 
   // COOK RECIPE PRODUCT RELATION
   @Post('createCookRecipeProduct')
+  @ApiOperation({ summary: 'Create Cook Recipe Product Relation' })
+  @ApiResponse({ status: 200, type: CookRecipeProductOutputDTO })
   async createCookRecipeProduct(
     @Body() createCookRecipeProductDTO: CreateCookRecipeProductDTO,
     @user() user: User,
@@ -83,6 +96,8 @@ export default class CookRecipeController {
   }
 
   @Put('updateCookRecipeProduct')
+  @ApiOperation({ summary: 'Update Cook Recipe Product Relation' })
+  @ApiResponse({ status: 200, type: CookRecipeProductOutputDTO })
   async updateCookRecipeProduct(
     @Body() updateCookRecipeProductDTO: UpdateCookRecipeProductDTO,
     @user() user: User,
@@ -94,6 +109,8 @@ export default class CookRecipeController {
   }
 
   @Delete('deleteCookRecipeProduct/:cookRecipeId/:productId')
+  @ApiOperation({ summary: 'Delete Cook Recipe Product Relation' })
+  @ApiResponse({ status: 200, type: CookRecipeProductOutputDTO })
   async deleteCookRecipeProduct(
     @Param('cookRecipeId', ParseIntPipe) cookRecipeId: number,
     @Param('productId', ParseIntPipe) productId: number,
@@ -108,6 +125,8 @@ export default class CookRecipeController {
 
   //Make Recipe Product and Delete Products
   @Post('makeCookRecipe/:id')
+  @ApiOperation({ summary: 'Make a Recipe decreasing Product Batches' })
+  @ApiResponse({ status: 200, type: CookRecipeOutputDTO })
   async makeCookRecipe(
     @Param('id', ParseIntPipe) id: number,
     @user() user: User,

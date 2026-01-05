@@ -20,6 +20,9 @@ import CreateProductDTO from '../dto/create-product.dto';
 import UpdateProductDTO from '../dto/update-product.dto';
 import CreateProductBatchDTO from '../dto/create-product-batch.dto';
 import UpdateProductBatchDTO from '../dto/update-product-batch.dto';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import ProductOutputDTO from '../dto-output/product-output.dto';
+import ProductBatchOutputDTO from '../dto-output/product-batch-output.dto';
 
 @Roles(RoleName.ADMIN, RoleName.USER)
 @UseGuards(AuthGuard, RoleGuard)
@@ -29,6 +32,10 @@ export default class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post('create')
+  @ApiOperation({
+    summary: 'Create Product',
+  })
+  @ApiResponse({ type: ProductOutputDTO })
   async createProduct(
     @Body() createProductDTO: CreateProductDTO,
     @user() user: User,
@@ -37,6 +44,10 @@ export default class ProductController {
   }
 
   @Put('update')
+  @ApiOperation({
+    summary: 'Update Product',
+  })
+  @ApiResponse({ type: ProductOutputDTO })
   async updateProduct(
     @Body() updateProductDTO: UpdateProductDTO,
     @user() user: User,
@@ -45,6 +56,10 @@ export default class ProductController {
   }
 
   @Delete('delete/:id')
+  @ApiOperation({
+    summary: 'Delete Product',
+  })
+  @ApiResponse({ type: ProductOutputDTO })
   async deleteProduct(
     @Param('id', ParseIntPipe) id: number,
     @user() user: User,
@@ -53,6 +68,10 @@ export default class ProductController {
   }
 
   @Post('createBatch')
+  @ApiOperation({
+    summary: 'Delete a Product Batch',
+  })
+  @ApiResponse({ type: ProductBatchOutputDTO })
   async createProductBatch(
     @Body() createProductBatchDTO: CreateProductBatchDTO,
     @user() user: User,
@@ -64,6 +83,10 @@ export default class ProductController {
   }
 
   @Put('updateBatch')
+  @ApiOperation({
+    summary: 'Update Product Batch',
+  })
+  @ApiResponse({ type: ProductBatchOutputDTO })
   async updateProductBatch(
     @Body() updateProductBatchDTO: UpdateProductBatchDTO,
     @user() user: User,
@@ -75,6 +98,10 @@ export default class ProductController {
   }
 
   @Post('incrementBatch/:id')
+  @ApiOperation({
+    summary: 'Increment a Product Batch by Product Step',
+  })
+  @ApiResponse({ type: ProductBatchOutputDTO })
   async incrementProductBatch(
     @Param('id', ParseIntPipe) id: number,
     @user() user: User,
@@ -83,6 +110,10 @@ export default class ProductController {
   }
 
   @Post('decrementBatch/:id')
+  @ApiOperation({
+    summary: 'Decrement a Product Batch by Product Step',
+  })
+  @ApiResponse({ type: ProductBatchOutputDTO })
   async decrementProductBatch(
     @Param('id', ParseIntPipe) id: number,
     @user() user: User,

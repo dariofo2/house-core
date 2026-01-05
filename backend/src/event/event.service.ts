@@ -6,6 +6,7 @@ import UpdateEventDTO from './dto/update-event.dto';
 import HouseService from 'src/house/house.service';
 import { plainToInstance } from 'class-transformer';
 import Event from 'src/database/entities/event/event.entity';
+import EventOutputDTO from './dto-output/event-output.dto';
 
 @Injectable()
 export default class EventService {
@@ -17,7 +18,9 @@ export default class EventService {
   async listEventsByHouse(user: User, houseId: number) {
     await this.houseService.checkIfUserisOnHouse(user, houseId);
 
-    return await this.eventRepository.listEventsByHouseId(houseId);
+    const eventsFound = await this.eventRepository.listEventsByHouseId(houseId);
+
+    return plainToInstance(EventOutputDTO, eventsFound);
   }
 
   async createEvent(user: User, createEventDTO: CreateEventDTO) {
@@ -26,9 +29,11 @@ export default class EventService {
       createEventDTO.houseId,
     );
 
-    return await this.eventRepository.createEvent(
+    const createdEvent = await this.eventRepository.createEvent(
       plainToInstance(Event, createEventDTO),
     );
+
+    return plainToInstance(EventOutputDTO, createdEvent);
   }
 
   async updateEvent(user: User, updateEventDTO: UpdateEventDTO) {
@@ -41,9 +46,11 @@ export default class EventService {
       eventFound.houseId,
     );
 
-    return await this.eventRepository.updateEvent(
+    const eventUpdated = await this.eventRepository.updateEvent(
       plainToInstance(Event, updateEventDTO),
     );
+
+    return plainToInstance(EventOutputDTO, eventUpdated);
   }
 
   async deleteEvent(user: User, id: number) {
@@ -71,6 +78,8 @@ export default class EventService {
 
     eventFound.updatedAt = new Date();
 
-    return await this.eventRepository.updateEvent(eventFound);
+    const updatedEvent = await this.eventRepository.updateEvent(eventFound);
+
+    return plainToInstance(EventOutputDTO, updatedEvent);
   }
 }

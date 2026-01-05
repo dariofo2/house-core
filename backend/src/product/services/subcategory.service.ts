@@ -7,6 +7,7 @@ import UpdateSubcategoryDTO from '../dto/update-subcategory.dto';
 import { plainToInstance } from 'class-transformer';
 import Subcategory from 'src/database/entities/product/subcategory.entity';
 import CategoryRepository from '../repositories/category.repository';
+import SubcategoryOutputDTO from '../dto-output/subcategory-output.dto';
 
 @Injectable()
 export default class SubcategoryService {
@@ -37,7 +38,7 @@ export default class SubcategoryService {
         plainToInstance(Subcategory, createSubcategoryDTO),
       );
 
-    return createdSubcategory;
+    return plainToInstance(SubcategoryOutputDTO, createdSubcategory);
   }
 
   async updateSubcategory(
@@ -56,9 +57,12 @@ export default class SubcategoryService {
       foundSubcategory.category.houseId,
     );
 
-    return await this.subcategoryRepository.updateSubcategory(
-      plainToInstance(Subcategory, updateSubcategoryDTO),
-    );
+    const subcategoryUpdated =
+      await this.subcategoryRepository.updateSubcategory(
+        plainToInstance(Subcategory, updateSubcategoryDTO),
+      );
+
+    return plainToInstance(SubcategoryOutputDTO, subcategoryUpdated);
   }
 
   async deleteSubcategory(user: User, SubcategoryId: number) {
@@ -82,9 +86,13 @@ export default class SubcategoryService {
     categoryId: number,
   ) {
     await this.houseService.checkIfUserisOnHouse(user, houseId);
-    return await this.subcategoryRepository.listSubcategoriesByCategoryId(
-      categoryId,
-    );
+
+    const subCategoriesList =
+      await this.subcategoryRepository.listSubcategoriesByCategoryId(
+        categoryId,
+      );
+
+    return plainToInstance(SubcategoryOutputDTO, subCategoriesList);
   }
 
   /*
