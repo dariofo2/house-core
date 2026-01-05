@@ -70,6 +70,15 @@ export default class HouseController {
     return await this.houseService.deleteHouse(user, id);
   }
 
+  //USER HOUSE RELATION
+  @Get('listUsersHouse/:houseId')
+  async getUsersHouse(
+    @Param('houseId', ParseIntPipe) houseId: number,
+    @user() user: User,
+  ) {
+    return await this.houseService.listUsersHouse(user, houseId);
+  }
+
   @Post('addUserHouse')
   async addUserHouse(
     @Body() addUserHouseDTO: AddUserHouseDTO,

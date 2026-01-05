@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import House from 'src/database/entities/house/house.entity';
 import UserHouse from 'src/database/entities/house/user-house.entity';
-import User from 'src/database/entities/user/user.entity';
 import { DataSource, Equal } from 'typeorm';
 
 @Injectable()
@@ -205,12 +204,11 @@ export default class HouseRepository {
     await queryRunner.connect();
 
     try {
-      const usersFound = await queryRunner.manager.find(User, {
+      const usersFound = await queryRunner.manager.find(UserHouse, {
         where: {
-          userHouses: {
-            houseId: Equal(houseId),
-          },
+          houseId: houseId,
         },
+        relations: { role: true, user: true },
       });
 
       return usersFound;
@@ -222,7 +220,7 @@ export default class HouseRepository {
     }
   }
 
-  async getUserHouseByHouseIdUserId(houseId: number, userId: number) {
+  async getUserHouse(houseId: number, userId: number) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
 
