@@ -207,7 +207,6 @@ export default class HouseService {
     userHouseToUpdate.roleId = roleFound.id;
     userHouseToUpdate.role = roleFound;
 
-    this.logger.warn(userHouseToUpdate);
     return await this.houseRepository.updateUserHouse(userHouseToUpdate);
   }
 
