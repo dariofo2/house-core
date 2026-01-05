@@ -14,6 +14,8 @@ import { RoleName } from 'src/common/enum/role.enum';
 import UpdateUserDTO from './dto/update-user.dto';
 import UpdateUserPasswordDTO from './dto/update-user-password.dto';
 import { compare, hash } from 'bcrypt';
+import UserOutputDTO from './dto-output/user-output.dto';
+import RoleOutputDTO from './dto-output/role-output.dto';
 
 @Injectable()
 export default class UserService {
@@ -29,13 +31,19 @@ export default class UserService {
 
     if (!userFound) throw new BadRequestException('User Not Found');
 
-    return userFound;
+    const userConv = plainToInstance(UserOutputDTO, userFound, {
+      excludeExtraneousValues: true,
+    });
+
+    return userConv;
   }
 
   async listUsers() {
     const usersFound = await this.userRepository.getUsers();
 
-    return usersFound;
+    return plainToInstance(UserOutputDTO, usersFound, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async createUser(createUserDTO: CreateUserDTO) {
@@ -48,56 +56,88 @@ export default class UserService {
     createUserDTO.password = await hash(createUserDTO.password, 4);
 
     const createdUser = await this.userRepository.createUser(
-      plainToInstance(User, createUserDTO),
+      plainToInstance(User, createUserDTO, { excludeExtraneousValues: true }),
     );
 
-    await this.userRepository.addUserRole(createdUser.id, RoleName.VISITOR);
+    //Role Assign Visitor
+    const visitorRoleFound = await this.userRepository.getRoleByName(
+      RoleName.VISITOR,
+    );
+    if (!visitorRoleFound)
+      throw new BadRequestException('Visitor Role doesnt Exist in DB');
 
-    return createdUser;
+    await this.userRepository.addUserRole(createdUser.id, visitorRoleFound.id);
+
+    return plainToInstance(UserOutputDTO, createdUser, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async createUserAdmin(createUserDTO: CreateUserDTO) {
     createUserDTO.password = await hash(createUserDTO.password, 4);
 
     const createdUser = await this.userRepository.createUser(
-      plainToInstance(User, createUserDTO),
+      plainToInstance(User, createUserDTO, { excludeExtraneousValues: true }),
     );
 
-    await this.userRepository.addUserRole(createdUser.id, RoleName.VISITOR);
-    return createdUser;
+    //Role Assign Visitor
+    const visitorRoleFound = await this.userRepository.getRoleByName(
+      RoleName.VISITOR,
+    );
+    if (!visitorRoleFound)
+      throw new BadRequestException('Visitor Role doesnt Exist in DB');
+
+    await this.userRepository.addUserRole(createdUser.id, visitorRoleFound.id);
+
+    return plainToInstance(UserOutputDTO, createdUser, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async deleteUser(user: User, userId: number) {
-    const roles: RoleName[] = await this.userRepository.getUserRoles(user.id);
+    const roles: RoleName[] = await this.userRepository.getUserRolesNamesArray(
+      user.id,
+    );
     if (user.id != userId)
       if (!roles.includes(RoleName.ADMIN))
         throw new UnauthorizedException(
           'Cant delete a User that is not You if not Admin',
         );
 
-    const deletedUser = await this.userRepository.deleteUser(userId);
+    const foundUser = await this.userRepository.getUser(userId);
+    if (!foundUser) throw new BadRequestException('User Doesnt exist in DB');
 
-    return deletedUser.raw as User;
+    const deletedUser = await this.userRepository.deleteUser(foundUser);
+    if (!deletedUser.affected)
+      throw new BadRequestException('Couldnt Delete nothing');
+
+    return plainToInstance(UserOutputDTO, foundUser, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async updateUser(user: User, updateUserDTO: UpdateUserDTO) {
-    const roles = await this.userRepository.getUserRoles(user.id);
+    const roles = await this.userRepository.getUserRolesNamesArray(user.id);
 
     if (user.id != updateUserDTO.id && !roles.includes(RoleName.ADMIN))
       throw new ForbiddenException(
         'You are Not Allowed to Update other User If not Admin',
       );
 
-    return await this.userRepository.updateUser(
+    const updatedUser = await this.userRepository.updateUser(
       plainToInstance(User, updateUserDTO),
     );
+
+    return plainToInstance(UserOutputDTO, updatedUser, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async updateUserPassword(
     user: User,
     updateUserPasswordDTO: UpdateUserPasswordDTO,
   ) {
-    const roles = await this.userRepository.getUserRoles(user.id);
+    const roles = await this.userRepository.getUserRolesNamesArray(user.id);
 
     if (user.id != updateUserPasswordDTO.id && !roles.includes(RoleName.ADMIN))
       throw new ForbiddenException(
@@ -117,26 +157,64 @@ export default class UserService {
         throw new UnauthorizedException('Last Password doesnt Match');
     }
 
-    return await this.userRepository.updateUser(newUser);
+    const updatedUser = await this.userRepository.updateUser(newUser);
+
+    return plainToInstance(UserOutputDTO, updatedUser, {
+      excludeExtraneousValues: true,
+    });
+  }
+
+  //USER ROLES
+  async getUserRoles(user: User, userId: number) {
+    const foundRoles = await this.userRepository.getUserRoles(userId);
+
+    return plainToInstance(RoleOutputDTO, foundRoles, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async addUserRole(userId: number, roleName: RoleName) {
-    const roles = await this.userRepository.getUserRoles(userId);
-    if (roles.includes(roleName))
-      throw new BadRequestException('The user just Has That Role');
+    const roleFound = await this.userRepository.getRoleByName(roleName);
+    if (!roleFound) throw new BadRequestException('Role doesnt Exist in DB');
 
-    return await this.userRepository.addUserRole(userId, roleName);
+    const userRoleFound = await this.userRepository.getUserRole(
+      userId,
+      roleFound?.id,
+    );
+    if (userRoleFound)
+      throw new BadRequestException('User already Has that role');
+
+    const userFound = await this.userRepository.getUser(userId);
+    if (!userFound) throw new BadRequestException('User doesnt Exist in DB');
+
+    await this.userRepository.addUserRole(userId, roleFound.id);
+
+    return plainToInstance(RoleOutputDTO, roleFound, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async deleteUserRole(userId: number, roleName: RoleName) {
-    const roles = await this.userRepository.getUserRoles(userId);
-    if (!roles.includes(roleName))
-      throw new BadRequestException('User Doesnt Has That Role');
-
     const roleFound = await this.userRepository.getRoleByName(roleName);
-
     if (!roleFound) throw new BadRequestException('Role doesnt Exist');
 
-    return await this.userRepository.deleteUserRole(userId, roleFound.id);
+    const userRoleFound = await this.userRepository.getUserRole(
+      userId,
+      roleFound.id,
+    );
+
+    if (!userRoleFound)
+      throw new BadRequestException(
+        'Relation of this user and Role Doesnt Exist',
+      );
+
+    const deletedUserRole =
+      await this.userRepository.deleteUserRole(userRoleFound);
+    if (!deletedUserRole.affected)
+      throw new BadRequestException('Couldnt Delete Relation');
+
+    return plainToInstance(RoleOutputDTO, roleFound, {
+      excludeExtraneousValues: true,
+    });
   }
 }
