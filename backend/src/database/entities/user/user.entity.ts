@@ -4,12 +4,14 @@ import {
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
+  Unique,
   UpdateDateColumn,
 } from 'typeorm';
 import UserRole from './user-role.entity';
 import UserHouse from '../house/user-house.entity';
 
 @Entity()
+@Unique('uniqueName', ['name'])
 export default class User {
   @PrimaryGeneratedColumn()
   id: number;

@@ -9,6 +9,7 @@ import CreateProductBatchDTO from '../dto/create-product-batch.dto';
 import UpdateProductBatchDTO from '../dto/update-product-batch.dto';
 import ProductBatch from 'src/database/entities/product/product-batch.entity';
 import UpdateProductDTO from '../dto/update-product.dto';
+import SubcategoryRepository from '../repositories/subcategory.repository';
 
 @Injectable()
 export default class ProductService {
@@ -16,9 +17,22 @@ export default class ProductService {
   constructor(
     private readonly productRepository: ProductRepository,
     private readonly houseService: HouseService,
+    private readonly subcategoryRepository: SubcategoryRepository,
   ) {}
 
   async createProduct(user: User, createProductDTO: CreateProductDTO) {
+    const subcategoryFound = await this.subcategoryRepository.getSubcategory(
+      createProductDTO.subcategoryId,
+    );
+
+    if (
+      !subcategoryFound ||
+      subcategoryFound.category.houseId != createProductDTO.houseId
+    )
+      throw new BadRequestException(
+        'The House Id of Category doesnt match with this house',
+      );
+
     await this.houseService.checkIfUserisOnHouseAndAdmin(
       user,
       createProductDTO.houseId,
