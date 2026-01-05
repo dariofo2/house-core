@@ -31,7 +31,7 @@ export default class UserController {
 
   @UseGuards(AuthGuard, RoleGuard)
   @Get('get/:id')
-  @ApiOperation({ summary: 'hola', description: 'Get an User' })
+  @ApiOperation({ summary: 'Get an User', description: 'Get an User' })
   @ApiResponse({ status: 200, type: UserOutputDTO })
   @ApiParam({ name: 'id', example: 1 })
   async getUser(@Param('id', ParseIntPipe) id: number): Promise<UserOutputDTO> {
