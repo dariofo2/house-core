@@ -5,6 +5,7 @@ import { compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { instanceToPlain } from 'class-transformer';
+import User from 'src/database/entities/user/user.entity';
 
 @Injectable()
 export default class AuthService {
@@ -20,7 +21,7 @@ export default class AuthService {
    * @param loginDTO
    * @returns Bearer JWT Token
    */
-  async login(loginDTO: LoginDTO): Promise<string> {
+  async login(loginDTO: LoginDTO) {
     const userFound = await this.userRepository.findUserByName(loginDTO.name);
 
     if (!userFound) throw new UnauthorizedException('UserName Doesnt Exist');
@@ -29,15 +30,35 @@ export default class AuthService {
 
     if (!passwdMatch) throw new UnauthorizedException('Incorrect Password');
 
-    const jwtToken = await this.jwtService.signAsync(
-      instanceToPlain(userFound),
-      {
-        secret: this.configService.get('JWT_SECRET'),
-      },
-    );
+    const refreshToken = await this.generateRefreshToken(userFound);
+    const accesToken = await this.generateAccesToken(userFound);
+
+    return { refreshToken: refreshToken, accesToken: accesToken };
+  }
+
+  async generateRefreshToken(user: User) {
+    const jwtToken = await this.jwtService.signAsync(instanceToPlain(user), {
+      secret: this.configService.get('JWT_SECRET'),
+      expiresIn: '30d',
+    });
 
     return 'Bearer ' + jwtToken;
   }
 
-  async logout() {}
+  async generateAccesToken(user: User) {
+    const jwtToken = await this.jwtService.signAsync(instanceToPlain(user), {
+      secret: this.configService.get('JWT_SECRET'),
+      expiresIn: '10m',
+    });
+
+    return 'Bearer ' + jwtToken;
+  }
+
+  async regenerateAccessToken(userName: string) {
+    const userFound = await this.userRepository.findUserByName(userName);
+
+    if (!userFound) throw Error('User Not Found');
+
+    return await this.generateAccesToken(userFound);
+  }
 }

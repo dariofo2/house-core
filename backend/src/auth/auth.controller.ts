@@ -12,7 +12,13 @@ export default class AuthController {
     @Res({ passthrough: true }) response: Response,
   ) {
     const bearerJWT = await this.authService.login(loginDTO);
-    response.cookie('jwtToken', bearerJWT, {
+    response.cookie('jwtAccessToken', bearerJWT.accesToken, {
+      httpOnly: true,
+      secure: false,
+      maxAge: 999999999,
+    });
+
+    response.cookie('jwtRefreshToken', bearerJWT.refreshToken, {
       httpOnly: true,
       secure: false,
       maxAge: 999999999,
@@ -23,7 +29,13 @@ export default class AuthController {
 
   @Post('logout')
   logout(@Res({ passthrough: true }) response: Response) {
-    response.clearCookie('jwtToken', {
+    response.clearCookie('jwtRefreshToken', {
+      httpOnly: true,
+      secure: false,
+      maxAge: 999999999,
+    });
+
+    response.clearCookie('jwtAccessToken', {
       httpOnly: true,
       secure: false,
       maxAge: 999999999,

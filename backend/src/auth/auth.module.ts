@@ -6,7 +6,6 @@ import { JwtModule } from '@nestjs/jwt';
 import RoleGuard from './guards/role.guard';
 import AuthGuard from './guards/auth.guard';
 import AuthApiGuard from './guards/auth-api.guard';
-import NoGuard from './guards/no.guard';
 
 @Module({
   imports: [
@@ -20,7 +19,7 @@ import NoGuard from './guards/no.guard';
     forwardRef(() => UserModule),
   ],
   controllers: [AuthController],
-  providers: [AuthService, AuthGuard, RoleGuard, AuthApiGuard, NoGuard],
-  exports: [AuthGuard, RoleGuard, AuthApiGuard, NoGuard],
+  providers: [AuthService, AuthGuard, RoleGuard, AuthApiGuard],
+  exports: [AuthGuard, RoleGuard, AuthApiGuard, AuthService],
 })
 export default class AuthModule {}
