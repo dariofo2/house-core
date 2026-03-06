@@ -4,74 +4,88 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import ApiService from '@/http/axios-connector/axiosConnector';
-import { LoginDTO } from '@/http/DTO/LoginDTO'; // Assuming LoginDTO is correctly imported from its path
+import { LoginDTO } from '@/http/DTO/LoginDTO';
 
 export default function LoginView() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     const credentials: LoginDTO = { name: username, password };
     try {
-      const response = await ApiService.login(credentials);
-      // Assuming ApiService.login returns a UserOutputDTO or similar on success
-      toast.success('Login successful!');
-      console.log('Login successful:', response);
+      await ApiService.login(credentials);
+      toast.success('¡Sesión iniciada con éxito!');
       window.location.href = '/';
-      // TODO: Handle successful login, e.g., store token, redirect to dashboard
-      // For now, just log and show a toast.
     } catch (error) {
-      // The ApiService interceptor will handle displaying the toast for API errors.
-      // You can add additional specific error handling here if needed.
       console.error('Login failed:', error);
-      // toast.error('Login failed. Please check your credentials.'); // This would be redundant due to the interceptor
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 p-4">
-      <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8 w-full max-w-sm">
-        <h2 className="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-white">Welcome Back</h2>
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Username
-            </label>
-            <input
-              id="username"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-white"
-            />
+    <div className="container-fluid vh-100 bg-light d-flex align-items-center justify-content-center">
+      <div className="card shadow-lg border-0" style={{ maxWidth: '400px', width: '100%' }}>
+        <div className="card-body p-5">
+          <div className="text-center mb-4">
+            <h2 className="fw-bold text-primary">Bienvenido</h2>
+            <p className="text-muted">Inicia sesión en House Core</p>
           </div>
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-white"
-            />
+          <form onSubmit={handleLogin}>
+            <div className="mb-3">
+              <label htmlFor="username" className="form-label small fw-bold text-secondary text-uppercase">
+                Usuario
+              </label>
+              <input
+                id="username"
+                type="text"
+                className="form-control form-control-lg bg-light border-0 shadow-sm"
+                placeholder="Tu nombre de usuario"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="password" className="form-label small fw-bold text-secondary text-uppercase">
+                Contraseña
+              </label>
+              <input
+                id="password"
+                type="password"
+                className="form-control form-control-lg bg-light border-0 shadow-sm"
+                placeholder="********"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              className="btn btn-primary btn-lg w-100 fw-bold shadow-sm"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Entrando...
+                </>
+              ) : (
+                'Iniciar Sesión'
+              )}
+            </button>
+          </form>
+          <div className="mt-4 text-center">
+            <p className="small text-muted mb-0">
+              ¿No tienes cuenta?{' '}
+              <Link href="/register" className="text-primary fw-bold text-decoration-none">
+                Regístrate aquí
+              </Link>
+            </p>
           </div>
-          <button
-            type="submit"
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-700 dark:hover:bg-indigo-800"
-          >
-            Login
-          </button>
-        </form>
-        <div className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
-          Need an account?{" "}
-          <Link href="/register" className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">
-            Create user
-          </Link>
         </div>
       </div>
     </div>
