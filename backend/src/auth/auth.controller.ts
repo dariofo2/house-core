@@ -2,10 +2,14 @@ import { Body, Controller, Post, Res } from '@nestjs/common';
 import LoginDTO from './dto/login.dto';
 import AuthService from './auth.service';
 import type { Response } from 'express';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 export default class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
   @Post('login')
   async login(
     @Body() loginDTO: LoginDTO,
@@ -24,6 +28,14 @@ export default class AuthController {
       maxAge: 999999999,
     });
 
+    const domainFront =
+      this.configService.getOrThrow<string>('FRONTEND_DOMAIN');
+
+    response.cookie('user', JSON.stringify(bearerJWT.user), {
+      domain: domainFront,
+      maxAge: 999999999,
+    });
+
     return bearerJWT;
   }
 
@@ -38,6 +50,11 @@ export default class AuthController {
     response.clearCookie('jwtAccessToken', {
       httpOnly: true,
       secure: false,
+      maxAge: 999999999,
+    });
+
+    response.clearCookie('user', {
+      domain: this.configService.get('FRONTEND_DOMAIN'),
       maxAge: 999999999,
     });
 

@@ -53,10 +53,11 @@ export default class UserService {
     if (userCreationMode === 'false')
       throw new UnauthorizedException('Only Admins can Create User');
 
+    this.logger.warn(createUserDTO);
     createUserDTO.password = await hash(createUserDTO.password, 4);
 
     const createdUser = await this.userRepository.saveUser(
-      plainToInstance(User, createUserDTO, { excludeExtraneousValues: true }),
+      plainToInstance(User, createUserDTO, { excludeExtraneousValues: false }),
     );
 
     //Role Assign Visitor
@@ -77,7 +78,7 @@ export default class UserService {
     createUserDTO.password = await hash(createUserDTO.password, 4);
 
     const createdUser = await this.userRepository.saveUser(
-      plainToInstance(User, createUserDTO, { excludeExtraneousValues: true }),
+      plainToInstance(User, createUserDTO, { excludeExtraneousValues: false }),
     );
 
     //Role Assign Visitor
