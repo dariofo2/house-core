@@ -8,6 +8,7 @@ import { CreateUserDTO } from "../DTO/CreateUserDTO";
 import { UpdateUserDTO } from "../DTO/UpdateUserDTO";
 import { UpdateUserPasswordDTO } from "../DTO/UpdateUserPasswordDTO";
 import { LoginDTO } from "../DTO/LoginDTO";
+import { LoginOutputDTO } from "../DTO/LoginOutputDTO";
 import { HouseOutputDTO } from "../DTO/HouseOutputDTO";
 import { CreateHouseDTO } from "../DTO/CreateHouseDTO";
 import { UpdateHouseDTO } from "../DTO/UpdateHouseDTO";
@@ -284,8 +285,7 @@ class ApiService {
    * User login.
    * POST /auth/login
    */
-  static async login(credentials: LoginDTO): Promise<UserOutputDTO> {
-    // Assuming login returns some token or user info, adjust return type as needed
+  static async login(credentials: LoginDTO): Promise<LoginOutputDTO> {
     try {
       const response = await ApiService.apiClient.post(
         "/auth/login",

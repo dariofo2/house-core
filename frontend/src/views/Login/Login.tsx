@@ -3,10 +3,13 @@
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 import ApiService from '@/http/axios-connector/axiosConnector';
 import { LoginDTO } from '@/http/DTO/LoginDTO';
+import { RoleName } from '@/common/enum/role.enum';
 
 export default function LoginView() {
+  const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -16,9 +19,16 @@ export default function LoginView() {
     setLoading(true);
     const credentials: LoginDTO = { name: username, password };
     try {
-      await ApiService.login(credentials);
+      const response = await ApiService.login(credentials);
       toast.success('¡Sesión iniciada con éxito!');
-      window.location.href = '/';
+      
+      const isAdmin = response.user.userRoles?.some(ur => ur.role.name === RoleName.ADMIN);
+      
+      if (isAdmin) {
+        window.location.href='/user/house/list';
+      } else {
+        window.location.href='/user/house/list';
+      }
     } catch (error) {
       console.error('Login failed:', error);
     } finally {
