@@ -16,6 +16,6 @@ export default class CookRecipeProductOutputDTO {
   productId: number;
 
   @Expose()
-  @ApiProperty({ type: [ProductOutputDTO] })
-  products: ProductOutputDTO[];
+  @ApiProperty({ type: ProductOutputDTO })
+  product: ProductOutputDTO;
 }

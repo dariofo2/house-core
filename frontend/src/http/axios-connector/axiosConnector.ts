@@ -469,7 +469,7 @@ class ApiService {
    */
   static async getCategoryJoinProduct(
     houseId: number,
-  ): Promise<CategoryOutputDTO> {
+  ): Promise<Array<CategoryOutputDTO>> {
     try {
       const response = await ApiService.apiClient.get(
         `/category/getByHouseJoinProduct/${houseId}`,
@@ -780,9 +780,9 @@ class ApiService {
 
   /**
    * List Join CookRecipes By House.
-   * GET /cookRecipe/listJoinByHouse/{houseId}
+   * GET /cookRecipe/listJoinByHouse/${houseId}
    */
-  static async listJoinByHouse(houseId: number): Promise<CookRecipeOutputDTO> {
+  static async listJoinByHouse(houseId: number): Promise<Array<CookRecipeOutputDTO>> {
     try {
       const response = await ApiService.apiClient.get(
         `/cookRecipe/listJoinByHouse/${houseId}`,
