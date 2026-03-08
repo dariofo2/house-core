@@ -36,6 +36,7 @@ export default class CookRecipeProduct {
   cookRecipe: CookRecipe;
 
   @ManyToOne(() => Product, (product) => product.cookRecipesProduct, {
+    cascade: true,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })

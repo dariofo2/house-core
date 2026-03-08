@@ -3,8 +3,8 @@ export interface CreateProductDTO {
   houseId: number;
   name: string;
   description: string;
-  unity: object | null;
+  unity: string | null;
   step: number;
-  photo: object | null;
+  photo: string | null;
   minQuantity: number;
 }

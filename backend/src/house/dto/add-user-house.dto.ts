@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNumber } from 'class-validator';
+import { IsEnum, IsNumber, IsString } from 'class-validator';
 import { RoleName } from 'src/common/enum/role.enum';
 
 export default class AddUserHouseDTO {
-  @IsNumber()
-  @ApiProperty({ example: 1 })
-  userId: number;
+  @IsString()
+  @ApiProperty({ example: 'dario@example.com' })
+  userIdentifier: string;
 
   @IsNumber()
   @ApiProperty({ example: 1 })

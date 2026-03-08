@@ -53,7 +53,6 @@ export default function ProductModal({ show, onClose, onSuccess, subcategoryId, 
       if (product) {
         const updateData: UpdateProductDTO = { 
           id: product.id, 
-          subcategoryId, 
           ...data,
           unity: data.unity || null,
           photo: null

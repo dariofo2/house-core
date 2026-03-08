@@ -1,5 +1,5 @@
 export interface AddUserHouseDTO {
-  userId: number;
+  userIdentifier: string;
   houseId: number;
   roleName: string;
 }

@@ -58,8 +58,9 @@ const UpdateUserRoleModal: React.FC<UpdateUserRoleModalProps> = ({ houseId, user
                   value={formData.roleName}
                   onChange={(e) => setFormData({ ...formData, roleName: e.target.value })}
                 >
-                  <option value="USER">Usuario</option>
-                  <option value="ADMIN">Administrador de Casa</option>
+                  <option value="admin">Administrador de Casa</option>
+                  <option value="user">Usuario de Casa</option>
+                  <option value="visitor">Visitante de Casa</option>
                 </select>
               </div>
             </div>

@@ -47,7 +47,7 @@ export default class CookRecipe {
   @OneToMany(
     () => CookRecipeProduct,
     (cookRecipeProduct) => cookRecipeProduct.cookRecipe,
-    { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
+    { cascade: true, onDelete: 'CASCADE', onUpdate: 'CASCADE' },
   )
   cookRecipeProducts: CookRecipeProduct[];
 }

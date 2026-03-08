@@ -27,6 +27,7 @@ import { CreateProductDTO } from "../DTO/CreateProductDTO";
 import { UpdateProductDTO } from "../DTO/UpdateProductDTO";
 import { CreateProductBatchDTO } from "../DTO/CreateProductBatchDTO";
 import { UpdateProductBatchDTO } from "../DTO/UpdateProductBatchDTO";
+import { ProductCarShopOutputDTO } from "../DTO/ProductCarShopOutputDTO";
 import { EventOutputDTO } from "../DTO/EventOutputDTO";
 import { CreateEventDTO } from "../DTO/CreateEventDTO";
 import { UpdateEventDTO } from "../DTO/UpdateEventDTO";
@@ -36,6 +37,7 @@ import { CreateCookRecipeDTO } from "../DTO/CreateCookRecipeDTO";
 import { UpdateCookRecipeDTO } from "../DTO/UpdateCookRecipeDTO";
 import { CreateCookRecipeProductDTO } from "../DTO/CreateCookRecipeProductDTO";
 import { UpdateCookRecipeProductDTO } from "../DTO/UpdateCookRecipeProductDTO";
+import { createHash } from "crypto";
 
 // Define a generic error structure that matches typical API error responses
 interface ApiError {
@@ -170,6 +172,11 @@ class ApiService {
    */
   static async createUser(userData: CreateUserDTO): Promise<boolean> {
     try {
+      const passwordHashed = createHash("sha256")
+        .update(Buffer.from(userData.password, "utf-8"))
+        .digest("hex");
+      userData.password = passwordHashed;
+
       const response = await ApiService.apiClient.post(
         "/user/create",
         userData,
@@ -188,6 +195,11 @@ class ApiService {
     userData: CreateUserDTO,
   ): Promise<UserOutputDTO> {
     try {
+      const passwordHashed = createHash("sha256")
+        .update(Buffer.from(userData.password, "utf-8"))
+        .digest("hex");
+      userData.password = passwordHashed;
+
       const response = await ApiService.apiClient.post(
         "/user/createAdmin",
         userData,
@@ -222,6 +234,18 @@ class ApiService {
     passwordData: UpdateUserPasswordDTO,
   ): Promise<UserOutputDTO> {
     try {
+      const lastPasswordHashed = createHash("sha256")
+        .update(Buffer.from(passwordData.lastPassword, "utf-8"))
+        .digest("hex");
+      passwordData.lastPassword
+       = lastPasswordHashed;
+
+       const newPasswordHashed = createHash("sha256")
+        .update(Buffer.from(passwordData.newPassword, "utf-8"))
+        .digest("hex");
+      passwordData.newPassword
+       = newPasswordHashed;
+
       const response = await ApiService.apiClient.patch(
         "/user/updatePassword",
         passwordData,
@@ -286,6 +310,11 @@ class ApiService {
    * POST /auth/login
    */
   static async login(credentials: LoginDTO): Promise<LoginOutputDTO> {
+    const passwordHashed = createHash("sha256")
+      .update(Buffer.from(credentials.password, "utf-8"))
+      .digest("hex");
+    credentials.password = passwordHashed;
+
     try {
       const response = await ApiService.apiClient.post(
         "/auth/login",
@@ -398,7 +427,9 @@ class ApiService {
    * Get Users associated with a House.
    * GET /house/listUsersHouse/{houseId}
    */
-  static async getUsersHouse(houseId: number): Promise<Array<UserHouseOutputDTO>> {
+  static async getUsersHouse(
+    houseId: number,
+  ): Promise<Array<UserHouseOutputDTO>> {
     try {
       const response = await ApiService.apiClient.get(
         `/house/listUsersHouse/${houseId}`,
@@ -704,6 +735,58 @@ class ApiService {
   }
 
   /**
+   * List products to Car Shop.
+   * GET /product/getCarShopProducts/{houseId}
+   */
+  static async getCarShopProducts(
+    houseId: number,
+  ): Promise<Array<ProductCarShopOutputDTO>> {
+    try {
+      const response = await ApiService.apiClient.get(
+        `/product/getCarShopProducts/${houseId}`,
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get Batches of a Product.
+   * GET /product/getBatches/{productId}
+   */
+  static async getProductBatches(
+    productId: number,
+  ): Promise<Array<ProductBatchOutputDTO>> {
+    try {
+      const response = await ApiService.apiClient.get(
+        `/product/getBatches/${productId}`,
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Confirm product purchase and add stock.
+   * POST /product/confirmPurchase/{productId}/{quantity}
+   */
+  static async confirmPurchase(
+    productId: number,
+    quantity: number,
+  ): Promise<ProductBatchOutputDTO> {
+    try {
+      const response = await ApiService.apiClient.post(
+        `/product/confirmPurchase/${productId}/${quantity}`,
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
    * Get Events by House ID.
    * GET /event/getByHouse/{houseId}
    */
@@ -782,7 +865,9 @@ class ApiService {
    * List Join CookRecipes By House.
    * GET /cookRecipe/listJoinByHouse/${houseId}
    */
-  static async listJoinByHouse(houseId: number): Promise<Array<CookRecipeOutputDTO>> {
+  static async listJoinByHouse(
+    houseId: number,
+  ): Promise<Array<CookRecipeOutputDTO>> {
     try {
       const response = await ApiService.apiClient.get(
         `/cookRecipe/listJoinByHouse/${houseId}`,
