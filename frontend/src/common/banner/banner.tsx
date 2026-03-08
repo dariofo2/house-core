@@ -58,6 +58,9 @@ export default async function UserBanner() {
                             <span className="navbar-text text-white me-3">
                                 <i className="bi bi-person-circle me-1"></i>
                                 Bienvenido, <strong>{userName}</strong>
+                                <Link href="/user/profile" className="text-white ms-2 opacity-75 hover-opacity-100" title="Configuración">
+                                    <i className="bi bi-gear-fill"></i>
+                                </Link>
                             </span>
                             <Link href="/logout" className="btn btn-outline-light btn-sm">
                                 Cerrar Sesión
