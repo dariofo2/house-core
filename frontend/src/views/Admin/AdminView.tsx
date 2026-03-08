@@ -27,7 +27,9 @@ export default function AdminView() {
               <div className="card bg-light border-0 text-center p-4 mb-3">
                 <h3 className="fw-bold">Casas</h3>
                 <p>Gestionar registros de casas</p>
-                <button className="btn btn-outline-primary btn-sm">Ver todas</button>
+                <Link href="/admin/houses/list" className="btn btn-outline-primary btn-sm">
+                  Ver todas
+                </Link>
               </div>
             </div>
             <div className="col-md-4">

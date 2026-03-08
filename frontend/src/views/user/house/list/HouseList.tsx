@@ -5,12 +5,14 @@ import { useRouter } from 'next/navigation';
 import { HouseOutputDTO } from '@/http/DTO/HouseOutputDTO';
 import ApiService from '@/http/axios-connector/axiosConnector';
 import CreateHouseModal from './modals/CreateHouseModal';
+import EditHouseModal from './modals/EditHouseModal';
 import DeleteHouseModal from './modals/DeleteHouseModal';
 
 const HouseListView = () => {
   const [houses, setHouses] = useState<HouseOutputDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [houseToEdit, setHouseToEdit] = useState<HouseOutputDTO | null>(null);
   const [houseToDelete, setHouseToDelete] = useState<HouseOutputDTO | null>(null);
   const router = useRouter();
 
@@ -85,6 +87,13 @@ const HouseListView = () => {
                     Entrar
                   </button>
                   <button 
+                    className="btn btn-outline-secondary"
+                    title="Editar casa"
+                    onClick={() => setHouseToEdit(house)}
+                  >
+                    <i className="bi bi-pencil"></i>
+                  </button>
+                  <button 
                     className="btn btn-outline-danger"
                     title="Borrar casa"
                     onClick={() => setHouseToDelete(house)}
@@ -103,6 +112,14 @@ const HouseListView = () => {
         <CreateHouseModal 
           onSuccess={fetchHouses} 
           onClose={() => setShowCreateModal(false)} 
+        />
+      )}
+
+      {houseToEdit && (
+        <EditHouseModal 
+          house={houseToEdit}
+          onSuccess={fetchHouses}
+          onClose={() => setHouseToEdit(null)}
         />
       )}
 

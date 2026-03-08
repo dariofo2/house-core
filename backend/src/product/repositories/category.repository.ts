@@ -67,6 +67,15 @@ export default class CategoryRepository {
             },
           },
         },
+        order: {
+          name: 'DESC',
+          subcategories: {
+            name: 'DESC',
+            products: {
+              name: 'DESC',
+            },
+          },
+        },
       });
 
       return categoriesFound;

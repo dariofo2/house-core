@@ -6,6 +6,10 @@ export default class UpdateSubcategoryDTO {
   @ApiProperty({ example: 1 })
   id: number;
 
+  @IsNumber()
+  @ApiProperty({ example: 1 })
+  categoryId: number;
+
   @IsString()
   @IsNotEmpty()
   @ApiProperty({ example: 'categoryExample' })

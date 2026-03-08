@@ -100,7 +100,6 @@ export default class UserRepository {
     await queryRunner.connect();
 
     try {
-      this.logger.warn(user)
       const userCreated = await queryRunner.manager.save(User, user);
 
       return userCreated;

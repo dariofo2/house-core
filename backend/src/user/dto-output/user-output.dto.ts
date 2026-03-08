@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude, Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
+import UserRoleOutputDTO from './user-role-output.dto';
 
 export default class UserOutputDTO {
   @Expose()
@@ -21,4 +22,9 @@ export default class UserOutputDTO {
   @Expose()
   @ApiProperty({ type: Date })
   updatedAt: Date;
+
+  @Expose()
+  @ApiProperty({ type: () => [UserRoleOutputDTO] })
+  @Type(() => UserRoleOutputDTO)
+  userRoles?: UserRoleOutputDTO[];
 }

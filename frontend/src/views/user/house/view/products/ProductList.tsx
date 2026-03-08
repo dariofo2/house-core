@@ -23,7 +23,7 @@ export default function ProductListView({ houseId }: { houseId: number }) {
 
   // States for Modals visibility
   const [modalType, setModalType] = useState<string | null>(null);
-  
+
   // States for Selection
   const [selectedCategory, setSelectedCategory] = useState<CategoryOutputDTO | null>(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState<SubcategoryOutputDTO | null>(null);
@@ -34,9 +34,9 @@ export default function ProductListView({ houseId }: { houseId: number }) {
     fetchData();
   }, [houseId]);
 
-  const fetchData = async () => {
+  const fetchData = async (silent = false) => {
     try {
-      setLoading(true);
+      if (!silent) setLoading(true);
       const data = await ApiService.getCategoryJoinProduct(houseId);
       setCategories(data);
     } catch (error) {
@@ -49,7 +49,7 @@ export default function ProductListView({ houseId }: { houseId: number }) {
   const handleIncrement = async (batchId: number) => {
     try {
       await ApiService.incrementProductBatch(batchId);
-      fetchData();
+      fetchData(true);
     } catch (error) {
       console.error('Increment failed:', error);
     }
@@ -58,7 +58,7 @@ export default function ProductListView({ houseId }: { houseId: number }) {
   const handleDecrement = async (batchId: number) => {
     try {
       await ApiService.decrementProductBatch(batchId);
-      fetchData();
+      fetchData(true);
     } catch (error) {
       console.error('Decrement failed:', error);
     }
@@ -70,7 +70,7 @@ export default function ProductListView({ houseId }: { houseId: number }) {
     try {
       await ApiService.deleteCategory(selectedCategory.id);
       toast.success('Categoría eliminada');
-      fetchData();
+      fetchData(true);
       setModalType(null);
     } catch (error) { console.error(error); }
   };
@@ -80,7 +80,7 @@ export default function ProductListView({ houseId }: { houseId: number }) {
     try {
       await ApiService.deleteSubcategory(selectedSubcategory.id);
       toast.success('Subcategoría eliminada');
-      fetchData();
+      fetchData(true);
       setModalType(null);
     } catch (error) { console.error(error); }
   };
@@ -90,7 +90,7 @@ export default function ProductListView({ houseId }: { houseId: number }) {
     try {
       await ApiService.deleteProduct(selectedProduct.id);
       toast.success('Producto eliminado');
-      fetchData();
+      fetchData(true);
       setModalType(null);
     } catch (error) { console.error(error); }
   };
@@ -126,8 +126,8 @@ export default function ProductListView({ houseId }: { houseId: number }) {
               <div className="accordion-item border-0 mb-3 rounded overflow-hidden" key={category.id}>
                 <h2 className="accordion-header shadow-sm">
                   <div className="d-flex align-items-center bg-white pe-3">
-                    <button 
-                      className={`accordion-button ${!isExpanded ? 'collapsed' : ''} fw-bold py-3`} 
+                    <button
+                      className={`accordion-button ${!isExpanded ? 'collapsed' : ''} fw-bold py-3`}
                       type="button"
                       onClick={() => setExpandedCategoryId(isExpanded ? null : category.id)}
                     >
@@ -151,7 +151,7 @@ export default function ProductListView({ houseId }: { houseId: number }) {
                         + Nueva Subcategoría
                       </button>
                     </div>
-                    
+
                     {(!category.subcategories || category.subcategories.length === 0) ? (
                       <p className="small text-muted mb-0">Esta categoría no tiene subcategorías.</p>
                     ) : (
@@ -238,7 +238,7 @@ export default function ProductListView({ houseId }: { houseId: number }) {
       <CategoryModal
         show={modalType === 'category'}
         onClose={() => setModalType(null)}
-        onSuccess={fetchData}
+        onSuccess={() => fetchData(true)}
         houseId={houseId}
         category={selectedCategory}
       />
@@ -246,7 +246,7 @@ export default function ProductListView({ houseId }: { houseId: number }) {
       <SubcategoryModal
         show={modalType === 'subcategory'}
         onClose={() => setModalType(null)}
-        onSuccess={fetchData}
+        onSuccess={() => fetchData(true)}
         categoryId={selectedCategory?.id || 0}
         subcategory={selectedSubcategory}
       />
@@ -254,7 +254,7 @@ export default function ProductListView({ houseId }: { houseId: number }) {
       <ProductModal
         show={modalType === 'product'}
         onClose={() => setModalType(null)}
-        onSuccess={fetchData}
+        onSuccess={() => fetchData(true)}
         subcategoryId={selectedSubcategory?.id || 0}
         houseId={houseId}
         product={selectedProduct}
@@ -263,7 +263,7 @@ export default function ProductListView({ houseId }: { houseId: number }) {
       <ProductBatchModal
         show={modalType === 'batch'}
         onClose={() => setModalType(null)}
-        onSuccess={fetchData}
+        onSuccess={() => fetchData(true)}
         productId={selectedProduct?.id || 0}
         batch={selectedBatch}
       />
@@ -276,7 +276,7 @@ export default function ProductListView({ houseId }: { houseId: number }) {
         title="Eliminar Categoría"
         itemName={selectedCategory?.name || ''}
       />
-      
+
       <DeleteConfirmationModal
         show={modalType === 'deleteSubcategory'}
         onClose={() => setModalType(null)}

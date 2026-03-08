@@ -27,10 +27,13 @@ export default class HouseService {
   ) {}
 
   async getHouse(user: User, houseId: number) {
+    /*
     const houseFound = await this.houseRepository.getHouseByUserId(
       houseId,
       user.id,
     );
+    */
+    const houseFound = await this.houseRepository.getHouse(houseId);
 
     if (!houseFound) throw new BadRequestException('House Doesnt Exist');
     return plainToInstance(HouseOutputDTO, houseFound);
@@ -71,18 +74,7 @@ export default class HouseService {
   }
 
   async updateHouse(user: User, updateHouseDTO: UpdateHouseDTO) {
-    const userHouseFound = await this.houseRepository.getUserHouse(
-      updateHouseDTO.id,
-      user.id,
-    );
-
-    if (!userHouseFound)
-      throw new BadRequestException(
-        'You are not in that House or House doesnt Exist',
-      );
-
-    if ((userHouseFound.role.name as RoleName) != RoleName.ADMIN)
-      throw new ForbiddenException('Only House Admins can Update House');
+    await this.checkIfUserisOnHouseAndAdmin(user, updateHouseDTO.id);
 
     return await this.houseRepository.updateHouse(
       plainToInstance(House, updateHouseDTO),
@@ -90,39 +82,14 @@ export default class HouseService {
   }
 
   async deleteHouse(user: User, houseId: number) {
-    const userHouseFound = await this.houseRepository.getUserHouse(
-      houseId,
-      user.id,
-    );
-
-    if (!userHouseFound)
-      throw new BadRequestException(
-        'You are not in that House or House doesnt Exist',
-      );
-
-    if ((userHouseFound.role.name as RoleName) != RoleName.ADMIN)
-      throw new ForbiddenException('Only House Admins can delete House');
+    await this.checkIfUserisOnHouseAndAdmin(user, houseId);
 
     return await this.houseRepository.deleteHouse(houseId);
   }
 
   // USER HOUSE RELATION
   async listUsersHouse(user: User, houseId: number) {
-    const userHouseFound = await this.houseRepository.getUserHouse(
-      houseId,
-      user.id,
-    );
-
-    if (!userHouseFound)
-      throw new BadRequestException(
-        'You are not in that House or House doesnt Exist',
-      );
-
-    if (
-      (userHouseFound.role.name as RoleName) != RoleName.ADMIN &&
-      (userHouseFound.role.name as RoleName) != RoleName.USER
-    )
-      throw new ForbiddenException('Only House Admins can delete House');
+    await this.checkIfUserisOnHouseAndAdmin(user, houseId);
 
     const usersHouse =
       await this.houseRepository.getUsersHouseByHouseId(houseId);
@@ -131,20 +98,7 @@ export default class HouseService {
   }
 
   async addUserToHouse(user: User, addUserHouseDTO: AddUserHouseDTO) {
-    //Admin TODO
-
-    const userHouseFound = await this.houseRepository.getUserHouse(
-      addUserHouseDTO.houseId,
-      user.id,
-    );
-
-    if (!userHouseFound)
-      throw new BadRequestException(
-        'You are not in that House or House doesnt Exist',
-      );
-
-    if ((userHouseFound.role.name as RoleName) != RoleName.ADMIN)
-      throw new ForbiddenException('Only House Admins can add users To House');
+    await this.checkIfUserisOnHouseAndAdmin(user, addUserHouseDTO.houseId);
 
     const foundUserToAdd = await this.userRepository.findUserByNameOrEmail(
       addUserHouseDTO.userIdentifier,
@@ -163,7 +117,7 @@ export default class HouseService {
       );
 
     const role = await this.userRepository.getRoleByName(
-      addUserHouseDTO.roleName as RoleName,
+      addUserHouseDTO.roleName,
     );
 
     if (!role) throw new BadRequestException('This role doesnt Exist in DB');
@@ -182,18 +136,7 @@ export default class HouseService {
   ) {
     //ADMIN TODO
 
-    const userHouseFound = await this.houseRepository.getUserHouse(
-      updateUserHouseDTO.houseId,
-      user.id,
-    );
-
-    if (!userHouseFound)
-      throw new BadRequestException(
-        'You are not in that House or House doesnt Exist',
-      );
-
-    if ((userHouseFound.role.name as RoleName) != RoleName.ADMIN)
-      throw new ForbiddenException('Only House Admins can add users To House');
+    await this.checkIfUserisOnHouseAndAdmin(user, updateUserHouseDTO.houseId);
 
     const userHouseToUpdate = await this.houseRepository.getUserHouse(
       updateUserHouseDTO.houseId,
@@ -245,6 +188,8 @@ export default class HouseService {
 
   // PERMISSIONS
   async checkIfUserisOnHouseAndAdmin(user: User, houseId: number) {
+    if (user.userRoles.find((x) => x.role.name == 'admin')) return;
+
     const userHouseFound = await this.houseRepository.getUserHouse(
       houseId,
       user.id,
@@ -263,6 +208,8 @@ export default class HouseService {
 
   // PERMISSIONS
   async checkIfUserisOnHouseAndUser(user: User, houseId: number) {
+    if (user.userRoles.find((x) => x.role.name == 'admin')) return;
+
     const userHouseFound = await this.houseRepository.getUserHouse(
       houseId,
       user.id,
@@ -283,6 +230,8 @@ export default class HouseService {
   }
 
   async checkIfUserisOnHouse(user: User, houseId: number) {
+    if (user.userRoles.find((x) => x.role.name == 'admin')) return;
+
     const userHouseFound = await this.houseRepository.getUserHouse(
       houseId,
       user.id,

@@ -7,6 +7,7 @@ import CreateUserModal from './modal/CreateUserModal';
 import EditUserModal from './modal/EditUserModal';
 import DeleteUserModal from './modal/DeleteUserModal';
 import RolesModal from './modal/RolesModal';
+import UpdatePasswordModal from './modal/UpdatePasswordModal';
 
 export default function UserListView() {
   const [users, setUsers] = useState<UserOutputDTO[]>([]);
@@ -17,6 +18,7 @@ export default function UserListView() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showRolesModal, setShowRolesModal] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
 
   // Selected User for Edit/Delete/Roles
   const [selectedUser, setSelectedUser] = useState<UserOutputDTO | null>(null);
@@ -50,6 +52,11 @@ export default function UserListView() {
   const openRolesModal = (user: UserOutputDTO) => {
     setSelectedUser(user);
     setShowRolesModal(true);
+  };
+
+  const openPasswordModal = (user: UserOutputDTO) => {
+    setSelectedUser(user);
+    setShowPasswordModal(true);
   };
 
   return (
@@ -103,6 +110,13 @@ export default function UserListView() {
                         ))}
                       </td>
                       <td className="text-end px-4">
+                        <button
+                          className="btn btn-sm btn-outline-warning me-2"
+                          onClick={() => openPasswordModal(user)}
+                          title="Cambiar Contraseña"
+                        >
+                          Pass
+                        </button>
                         <button
                           className="btn btn-sm btn-outline-secondary me-2"
                           onClick={() => openRolesModal(user)}
@@ -159,6 +173,13 @@ export default function UserListView() {
             onClose={() => setShowRolesModal(false)}
             user={selectedUser}
             onRolesChanged={fetchUsers}
+          />
+
+          <UpdatePasswordModal
+            show={showPasswordModal}
+            onClose={() => setShowPasswordModal(false)}
+            onSuccess={fetchUsers}
+            user={selectedUser}
           />
         </>
       )}
