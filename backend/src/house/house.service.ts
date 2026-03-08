@@ -89,7 +89,7 @@ export default class HouseService {
 
   // USER HOUSE RELATION
   async listUsersHouse(user: User, houseId: number) {
-    await this.checkIfUserisOnHouseAndAdmin(user, houseId);
+    await this.checkIfUserisOnHouseAndUser(user, houseId);
 
     const usersHouse =
       await this.houseRepository.getUsersHouseByHouseId(houseId);
