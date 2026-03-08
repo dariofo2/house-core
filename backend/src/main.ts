@@ -8,6 +8,7 @@ import {
 import { customJsSwagger } from './swagger/custom';
 import cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
+import { writeFileSync } from 'node:fs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -34,12 +35,18 @@ async function bootstrap() {
     .addTag('house')
     .build();
 
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  const documentFactory = SwaggerModule.createDocument(app, config);
   const swaggerCustomOptions: SwaggerCustomOptions = {
     customJsStr: customJsSwagger,
   };
   SwaggerModule.setup('api', app, documentFactory, swaggerCustomOptions);
 
+  writeFileSync(
+    __dirname + '/swagger-spec.json',
+    JSON.stringify(documentFactory, null, 2),
+  );
+
+  app.enableCors({ origin: ['http://localhost:3001', '*'], credentials: true });
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

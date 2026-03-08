@@ -37,6 +37,24 @@ export default class UserRepository {
     }
   }
 
+  async findUserByNameOrEmail(identifier: string) {
+    const queryRunner = this.datasource.createQueryRunner();
+    await queryRunner.connect();
+
+    try {
+      const userFound = await queryRunner.manager.findOne(User, {
+        where: [{ name: Equal(identifier) }, { email: Equal(identifier) }],
+      });
+
+      return userFound;
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException(error);
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
   async getUsers() {
     const queryRunner = this.datasource.createQueryRunner();
     await queryRunner.connect();
@@ -82,6 +100,7 @@ export default class UserRepository {
     await queryRunner.connect();
 
     try {
+      this.logger.warn(user)
       const userCreated = await queryRunner.manager.save(User, user);
 
       return userCreated;

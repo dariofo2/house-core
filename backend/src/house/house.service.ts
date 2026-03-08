@@ -146,9 +146,15 @@ export default class HouseService {
     if ((userHouseFound.role.name as RoleName) != RoleName.ADMIN)
       throw new ForbiddenException('Only House Admins can add users To House');
 
+    const foundUserToAdd = await this.userRepository.findUserByNameOrEmail(
+      addUserHouseDTO.userIdentifier,
+    );
+
+    if (!foundUserToAdd) throw new BadRequestException('User doesnt Exist');
+
     const userHouseToUpdate = await this.houseRepository.getUserHouse(
       addUserHouseDTO.houseId,
-      addUserHouseDTO.userId,
+      foundUserToAdd.id,
     );
 
     if (userHouseToUpdate)
@@ -157,14 +163,14 @@ export default class HouseService {
       );
 
     const role = await this.userRepository.getRoleByName(
-      addUserHouseDTO.roleName,
+      addUserHouseDTO.roleName as RoleName,
     );
 
     if (!role) throw new BadRequestException('This role doesnt Exist in DB');
 
     const newUserHouse = new UserHouse();
     newUserHouse.houseId = addUserHouseDTO.houseId;
-    newUserHouse.userId = addUserHouseDTO.userId;
+    newUserHouse.userId = foundUserToAdd.id;
     newUserHouse.roleId = role?.id;
 
     return await this.houseRepository.addUserHouse(newUserHouse);
@@ -207,7 +213,6 @@ export default class HouseService {
     userHouseToUpdate.roleId = roleFound.id;
     userHouseToUpdate.role = roleFound;
 
-    this.logger.warn(userHouseToUpdate);
     return await this.houseRepository.updateUserHouse(userHouseToUpdate);
   }
 

@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Logger,
   Param,
   ParseIntPipe,
@@ -23,6 +24,7 @@ import UpdateProductBatchDTO from '../dto/update-product-batch.dto';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import ProductOutputDTO from '../dto-output/product-output.dto';
 import ProductBatchOutputDTO from '../dto-output/product-batch-output.dto';
+import ProductCarShopOutputDTO from '../dto-output/product-car-shop.output.dto';
 
 @Roles(RoleName.ADMIN, RoleName.USER)
 @UseGuards(AuthGuard, RoleGuard)
@@ -65,6 +67,43 @@ export default class ProductController {
     @user() user: User,
   ) {
     return await this.productService.deleteProduct(user, id);
+  }
+
+  @Get('getCarShopProducts/:houseId')
+  @ApiOperation({
+    summary: 'List products to Car Shop',
+  })
+  @ApiResponse({ type: ProductCarShopOutputDTO })
+  async listProductsCarShop(
+    @Param('houseId', ParseIntPipe) houseId: number,
+    @user() user: User,
+  ) {
+    return await this.productService.listProductsToCarShop(user, houseId);
+  }
+
+  @Get('getBatches/:productId')
+  @ApiOperation({
+    summary: 'Get Batches of a Product',
+  })
+  @ApiResponse({ type: [ProductBatchOutputDTO] })
+  async getProductBatches(
+    @Param('productId', ParseIntPipe) productId: number,
+    @user() user: User,
+  ) {
+    return await this.productService.getProductBatches(user, productId);
+  }
+
+  @Post('confirmPurchase/:productId/:quantity')
+  @ApiOperation({
+    summary: 'Confirm product purchase and add stock',
+  })
+  @ApiResponse({ type: ProductBatchOutputDTO })
+  async confirmPurchase(
+    @Param('productId', ParseIntPipe) productId: number,
+    @Param('quantity', ParseIntPipe) quantity: number,
+    @user() user: User,
+  ) {
+    return await this.productService.confirmPurchase(user, productId, quantity);
   }
 
   @Post('createBatch')

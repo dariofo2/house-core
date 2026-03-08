@@ -63,6 +63,7 @@ export default class Product {
   subcategory: Subcategory;
 
   @OneToMany(() => ProductBatch, (productBatch) => productBatch.product, {
+    cascade: true,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })

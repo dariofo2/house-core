@@ -1,4 +1,4 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable, Logger } from '@nestjs/common';
 import LoginDTO from './dto/login.dto';
 import UserRepository from 'src/user/user.repository';
 import { compare } from 'bcrypt';
@@ -24,16 +24,20 @@ export default class AuthService {
   async login(loginDTO: LoginDTO) {
     const userFound = await this.userRepository.findUserByName(loginDTO.name);
 
-    if (!userFound) throw new UnauthorizedException('UserName Doesnt Exist');
+    if (!userFound) throw new ForbiddenException('UserName Doesnt Exist');
 
     const passwdMatch = await compare(loginDTO.password, userFound.password);
 
-    if (!passwdMatch) throw new UnauthorizedException('Incorrect Password');
+    if (!passwdMatch) throw new ForbiddenException('Incorrect Password');
 
     const refreshToken = await this.generateRefreshToken(userFound);
     const accesToken = await this.generateAccesToken(userFound);
 
-    return { refreshToken: refreshToken, accesToken: accesToken };
+    return {
+      refreshToken: refreshToken,
+      accesToken: accesToken,
+      user: userFound,
+    };
   }
 
   async generateRefreshToken(user: User) {

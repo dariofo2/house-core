@@ -132,6 +132,21 @@ export default class ProductService {
     return plainToInstance(ProductBatchOutputDTO, updatedProductBatch);
   }
 
+  async getProductBatches(user: User, productId: number) {
+    const productFound = await this.productRepository.getProduct(productId);
+
+    if (!productFound) throw new BadRequestException('Product doesnt Exist');
+
+    await this.houseService.checkIfUserisOnHouseAndUser(
+      user,
+      productFound.houseId,
+    );
+
+    const batches = await this.productRepository.getProductBatches(productId);
+
+    return plainToInstance(ProductBatchOutputDTO, batches);
+  }
+
   async deleteProductBatch(user: User, id: number) {
     const foundProductBatch = await this.productRepository.getProductBatch(id);
 
@@ -186,5 +201,35 @@ export default class ProductService {
       await this.productRepository.updateProductBatch(foundProductBatch);
 
     return plainToInstance(ProductBatchOutputDTO, updatedProductBatch);
+  }
+
+  async confirmPurchase(user: User, productId: number, quantity: number) {
+    const productFound = await this.productRepository.getProduct(productId);
+
+    if (!productFound) throw new BadRequestException('Product doesnt Exist');
+
+    await this.houseService.checkIfUserisOnHouseAndUser(
+      user,
+      productFound.houseId,
+    );
+
+    const batches = await this.productRepository.getProductBatches(productId);
+
+    if (batches.length === 0)
+      throw new BadRequestException('No batches found for this product');
+
+    const firstBatch = batches[0];
+    firstBatch.quantity = (Number(firstBatch.quantity) || 0) + quantity;
+
+    return await this.productRepository.updateProductBatch(firstBatch);
+  }
+
+  async listProductsToCarShop(user: User, houseId: number) {
+    await this.houseService.checkIfUserisOnHouse(user, houseId);
+
+    const productsToBuy =
+      await this.productRepository.listProductsWithLessQuantityThanMin(houseId);
+
+    return productsToBuy;
   }
 }

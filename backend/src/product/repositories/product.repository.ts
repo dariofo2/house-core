@@ -6,6 +6,7 @@ import {
 import ProductBatch from 'src/database/entities/product/product-batch.entity';
 import Product from 'src/database/entities/product/product.entity';
 import { DataSource, Equal } from 'typeorm';
+import ProductCarShopOutputDTO from '../dto-output/product-car-shop.output.dto';
 
 @Injectable()
 export default class ProductRepository {
@@ -102,6 +103,38 @@ export default class ProductRepository {
     }
   }
 
+  async listProductsWithLessQuantityThanMin(houseId: number) {
+    const queryBuilder = this.datasource.createQueryBuilder();
+
+    try {
+      const resp: ProductCarShopOutputDTO[] = await queryBuilder
+        .from(Product, 'product')
+        .select('*')
+        .addSelect((qb) => {
+          return qb
+            .select('SUM(pb.quantity)')
+            .from(ProductBatch, 'pb')
+            .where('pb.productId=product.id');
+        }, 'quantity')
+        .where((qb) => {
+          const subquery = qb
+            .subQuery()
+            .select('SUM(pb.quantity)')
+            .from(ProductBatch, 'pb')
+            .where('pb.productId=product.id')
+            .getQuery();
+
+          return `${subquery} < product.minQuantity`;
+        })
+        .andWhere('product.houseId=:houseId', { houseId: houseId })
+        .getRawMany();
+
+      return resp;
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException(error);
+    }
+  }
   // BATCH PRODUCT
   async getProductBatch(id: number) {
     const queryRunner = this.datasource.createQueryRunner();
